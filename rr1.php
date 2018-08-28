@@ -59,11 +59,11 @@ function get_csrfmiddlewaretoken($url) {
 }
 
 function get_auth_cookie($url, $token) {
-  global $conn, $cookiefile, $smtp_username, $smtp_password;
+  global $conn, $cookiefile, $revel_username, $revel_password;
 
   $postfields = http_build_query([
-    'username' => $smtp_username,
-    'password' => $smtp_password,
+    'username' => $revel_username,
+    'password' => $revel_password,
     'csrfmiddlewaretoken' => $token
   ]);
   curl_setopt_array($conn, array(
@@ -107,7 +107,7 @@ function get_product_mix($range_from, $range_to) {
   global $cookiefile, $venue_name;
 
   ob_start();
-  passthru("curl -sb $cookiefile -H 'Expect:' -d 'dining_option=' -d 'range_from=$range_from' -d 'range_to=$range_to' -d 'sort_by=' -d 'sort_reverse=' -d 'combo_expand=' -d 'employee=' -d 'online_app=' -d 'online_app_type=' -d 'online_app_platform=' -d 'dining_option=' -d 'show_unpaid=' -d 'show_irregular=' -d 'sort_view=1' -d 'show_class=1' -d 'quantity_settings=0' -d 'no-filter=0' -d 'day_of_week=' https://$venue_name.revelup.com/reports/product_mix/pdf/");
+  passthru("curl -sb $cookiefile -H 'Expect:' -d 'dining_option=' -d 'range_from=$range_from' -d 'range_to=$range_to' -d 'sort_by=' -d 'sort_reverse=' -d 'combo_expand=' -d 'employee=' -d 'online_app=' -d 'online_app_type=' -d 'online_app_platform=' -d 'dining_option=' -d 'show_unpaid=' -d 'show_irregular=' -d 'sort_view=2' -d 'show_class=1' -d 'quantity_settings=0' -d 'no-filter=0' -d 'day_of_week=' https://$venue_name.revelup.com/reports/product_mix/pdf/");
   $output = ob_get_contents();
 //  $ob_end_clean();
 return $output;
@@ -145,7 +145,7 @@ $to = urlencode('08/22/2018 03:00:00');
 function sendmail($timeslot) {
 //  mb_language("Japanese");
 //  mb_internal_encoding("UTF-8");
-  global $to_address,$from_address;
+  global $to_address,$from_address,$body_text,$body_footer, $reply_to_address;
 
   $today = date('d_m_Y');
   $range = $range = get_range_by_timeslot($timeslot);
@@ -159,6 +159,7 @@ function sendmail($timeslot) {
   $from		= $from_address;
   $subject	= "$timeslot time Sales Summary, Product Mix";
   $headers	= "From: $from
+Reply-to: $reply_to_address
 MIME-Version: 1.0
 Content-Type: multipart/mixed;boundary=\"$boundary\"
 ";
@@ -167,6 +168,8 @@ Content-Type: multipart/mixed;boundary=\"$boundary\"
 Content-Type: text/plain; charset=\"ISO-2022-JP\"
 
 Today's $timeslot time summary and Product mix.
+
+$body_footer
 --$boundary
 Content-Type: application/octet-stream; name=\"{$filename1}\"
 Content-Disposition: attachment; filename=\"{$filename1}\"

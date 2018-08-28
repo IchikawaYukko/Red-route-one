@@ -1,0 +1,16 @@
+<?php
+$revel_username = "USERNAME HERE";
+$revel_password = "PASSWORD HERE";
+$venue_name = "xxxx";  //xxxx.revelup.com
+$timezone = 'Europe/London';
+$to_address = 'hoge@example.com';
+$from_address = 'XXXX reporting bot <noreply@example.com>';
+$reply_to_address = "piyo@example.com";
+$body_footer = "THIS IS AUTOMATED MESSAGE.
+
+Any issue? Please REPLY to developper [DEVELOPPER OR SERVER ADMIN ADDRESS].
+Or create issue on GitHub: https://github.com/IchikawaYukko/Red-route-one/issues
+
+from XXXX reporting bot.";
+?>
+
