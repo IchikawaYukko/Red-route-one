@@ -39,7 +39,7 @@ attach:
 	docker exec -it $(CNTNAME) /bin/bash
 lunch:
 	docker exec -it $(CNTNAME) systemctl start rsyslog postfix
-	docker exec -it $(CNTNAME) scl enable rh-php71 'php /rr1.php lunch'
+	docker exec -it $(CNTNAME) scl enable rh-php71 'php /rr1.php lunch >> /dev/null'
 
 tea:
 	docker exec -it $(CNTNAME) systemctl start rsyslog postfix

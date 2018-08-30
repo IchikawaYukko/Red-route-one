@@ -184,8 +184,8 @@ Content-Transfer-Encoding: base64
 $filedata2
 
 ";
-#  $message_body .= "--$boundary--";
-//  echo $headers.$message_body;
+  $message_body .= "--$boundary--";
+
   mail($to, $subject, $message_body, $headers);
 }
 ?>
