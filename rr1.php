@@ -9,7 +9,6 @@ $conn = curl_init();
 $token = get_csrfmiddlewaretoken($token_url);
 get_auth_cookie($auth_url, $token);
 
-// TODO product_mix too
 sendmail($argv[1]);
 curl_close($conn);
 
@@ -113,38 +112,7 @@ function get_product_mix($range_from, $range_to) {
 return $output;
 }
 
-/*function get_target_package_bypost($url) {
-  // download by POST
-  global $conn, $cookiefile, $token_url;
-
-$from = urlencode('08/21/2018 03:00:00');
-$to = urlencode('08/22/2018 03:00:00');
- $postfields = "sort_by=&sort_reverse=&combo_expand=&employee=&online_app=&'online_app_type=&online_app_platform=&dining_option=&show_unpaid=1&show_irregular=1&sort_view=1&show_class=1&quantity_settings=0&no-filter=0&day_of_week=&range_from=$from&range_to=$to";
-
-  curl_setopt_array($conn, array(
-    CURLOPT_URL         => $url,
-    CURLOPT_COOKIEJAR   => $cookiefile,
-    CURLOPT_COOKIEFILE  => $cookiefile,
-    CURLOPT_POSTFIELDS  => $postfields,
-    CURLOPT_HTTPHEADER => array('Expect: '),
-    CURLOPT_POST => true,
-    CURLOPT_FAILONERROR => false,
-#    CURLOPT_FOLLOWLOCATION => true,
-    CURLOPT_REFERER => $token_url.'reports/product_mix/',
-#    CURLOPT_AUTOREFERER => true,
-    CURLOPT_RETURNTRANSFER => true,
-    CURLOPT_VERBOSE => true,
-#    CURLOPT_HEADER => true,
-#CURLINFO_HEADER_OUT => true
-));
-
-
-  return curl_exec($conn);
-}*/
-
 function sendmail($timeslot) {
-//  mb_language("Japanese");
-//  mb_internal_encoding("UTF-8");
   global $to_address,$from_address,$body_text,$body_footer, $reply_to_address;
 
   $today = date('d_m_Y');
