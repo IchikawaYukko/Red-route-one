@@ -37,17 +37,18 @@ rm:
 
 attach:
 	docker exec -it $(CNTNAME) /bin/bash
+
 lunch:
-	docker exec -it $(CNTNAME) systemctl start rsyslog postfix
-	docker exec -it $(CNTNAME) scl enable rh-php71 'php /rr1.php lunch >> /dev/null'
+	docker exec -i $(CNTNAME) systemctl start rsyslog postfix
+	docker exec -i $(CNTNAME) scl enable rh-php71 'php /rr1.php lunch >> /dev/null'
 
 tea:
-	docker exec -it $(CNTNAME) systemctl start rsyslog postfix
-	docker exec -it $(CNTNAME) scl enable rh-php71 'php /rr1.php tea >> /dev/null'
+	docker exec -i $(CNTNAME) systemctl start rsyslog postfix
+	docker exec -i $(CNTNAME) scl enable rh-php71 'php /rr1.php tea >> /dev/null'
 
 dinner:
-	docker exec -it $(CNTNAME) systemctl start rsyslog postfix
-	docker exec -it $(CNTNAME) scl enable rh-php71 'php /rr1.php dinner >> /dev/null'
+	docker exec -i $(CNTNAME) systemctl start rsyslog postfix
+	docker exec -i $(CNTNAME) scl enable rh-php71 'php /rr1.php dinner >> /dev/null'
 
 logs:
 #	docker logs $(CNTNAME)
