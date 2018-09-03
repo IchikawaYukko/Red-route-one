@@ -107,7 +107,7 @@ function get_product_mix($range_from, $range_to) {
   global $cookiefile, $venue_name;
 
   ob_start();
-  passthru("curl -sb $cookiefile -H 'Expect:' -d 'dining_option=' -d 'range_from=$range_from' -d 'range_to=$range_to' -d 'sort_by=' -d 'sort_reverse=' -d 'combo_expand=' -d 'employee=' -d 'online_app=' -d 'online_app_type=' -d 'online_app_platform=' -d 'dining_option=' -d 'show_unpaid=' -d 'show_irregular=' -d 'sort_view=2' -d 'show_class=1' -d 'quantity_settings=0' -d 'no-filter=0' -d 'day_of_week=' https://$venue_name.revelup.com/reports/product_mix/pdf/");
+  passthru("curl -sb $cookiefile -H 'Expect:' -d 'dining_option=' -d 'range_from=$range_from' -d 'range_to=$range_to' -d 'sort_by=n_items' -d 'sort_reverse=1' -d 'combo_expand=' -d 'employee=' -d 'online_app=' -d 'online_app_type=' -d 'online_app_platform=' -d 'dining_option=' -d 'show_unpaid=' -d 'show_irregular=' -d 'sort_view=2' -d 'show_class=1' -d 'quantity_settings=0' -d 'no-filter=0' -d 'day_of_week=' https://$venue_name.revelup.com/reports/product_mix/pdf/");
   $output = ob_get_contents();
 //  $ob_end_clean();
 return $output;
