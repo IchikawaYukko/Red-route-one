@@ -40,15 +40,15 @@ attach:
 
 lunch:
 	docker exec -i $(CNTNAME) systemctl start rsyslog postfix
-	docker exec -i $(CNTNAME) scl enable rh-php71 'php /rr1.php lunch >> /dev/null'
+	docker exec -i $(CNTNAME) scl enable rh-php71 'php /rr1.php lunch'
 
 tea:
 	docker exec -i $(CNTNAME) systemctl start rsyslog postfix
-	docker exec -i $(CNTNAME) scl enable rh-php71 'php /rr1.php tea >> /dev/null'
+	docker exec -i $(CNTNAME) scl enable rh-php71 'php /rr1.php tea'
 
 dinner:
 	docker exec -i $(CNTNAME) systemctl start rsyslog postfix
-	docker exec -i $(CNTNAME) scl enable rh-php71 'php /rr1.php dinner >> /dev/null'
+	docker exec -i $(CNTNAME) scl enable rh-php71 'php /rr1.php dinner'
 
 logs:
 #	docker logs $(CNTNAME)
