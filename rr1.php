@@ -1,23 +1,22 @@
 <?php
 require_once("settings.php");
 
-$token_url = "https://$venue_name.revelup.com/";
-$auth_url = "https://$venue_name.revelup.com/login/?next=/dashboard/";
-$cookiefile = 'token.cookie';
+define('BASE_URL', 'https://'.VENUE_NAME.'.revelup.com/');
+define('AUTH_URL', BASE_URL.'login/?next=/dashboard/');
+define('COOKIE_FILE', 'token.cookie');
 
 $conn = curl_init();
-$token = get_csrfmiddlewaretoken($token_url);
-get_auth_cookie($auth_url, $token);
+$token = get_csrfmiddlewaretoken(BASE_URL);
+get_auth_cookie(AUTH_URL, $token);
 
 sendmail($argv[1]);
 curl_close($conn);
 
 function get_range_by_timeslot($timeslot) {
-  global $venue_name, $timezone;
-
-  date_default_timezone_set($timezone);
+  date_default_timezone_set(TIME_ZONE);
   $yesterday = date('m/d/Y', strtotime('-1 day'));
   $today = date('m/d/Y');
+  //$today = '09/10/2018';
 
   switch ($timeslot) {
     case 'lunch':
@@ -38,19 +37,21 @@ function get_range_by_timeslot($timeslot) {
 }
 
 function get_csrfmiddlewaretoken($url) {
-  global $conn, $cookiefile;
+  global $conn;
 
   curl_setopt_array($conn, array(
     CURLOPT_URL		=> $url,
-    CURLOPT_COOKIEJAR	=> $cookiefile,
-    CURLOPT_COOKIEFILE	=> $cookiefile,
+    CURLOPT_COOKIEJAR	=> COOKIE_FILE,
+    CURLOPT_COOKIEFILE	=> COOKIE_FILE,
     CURLOPT_FAILONERROR	=> true,
     CURLOPT_FOLLOWLOCATION => true,
     CURLOPT_AUTOREFERER => true,
+    /*CURLOPT_VERBOSE => true,*/
     CURLOPT_RETURNTRANSFER => true
   ));
 
-  $response = curl_exec($conn);
+  $response = curl_exec($conn) or die('fail on get_csrfmiddlewaretoken()');
+  /*var_dump($response);*/
   $start = strpos($response, "csrfmiddlewaretoken' value='") + strlen("csrfmiddlewaretoken' value='");
   $end = strpos($response, "'", $start);
 
@@ -58,17 +59,17 @@ function get_csrfmiddlewaretoken($url) {
 }
 
 function get_auth_cookie($url, $token) {
-  global $conn, $cookiefile, $revel_username, $revel_password;
+  global $conn;
 
   $postfields = http_build_query([
-    'username' => $revel_username,
-    'password' => $revel_password,
+    'username' => REVEL_USERNAME,
+    'password' => REVEL_PASSWORD,
     'csrfmiddlewaretoken' => $token
   ]);
   curl_setopt_array($conn, array(
     CURLOPT_URL         => $url,
-    CURLOPT_COOKIEJAR   => $cookiefile,
-    CURLOPT_COOKIEFILE  => $cookiefile,
+    CURLOPT_COOKIEJAR   => COOKIE_FILE,
+    CURLOPT_COOKIEFILE  => COOKIE_FILE,
     CURLOPT_POST	=> false,
     CURLOPT_POSTFIELDS  => $postfields,
     CURLOPT_FAILONERROR => true,
@@ -83,15 +84,15 @@ function get_auth_cookie($url, $token) {
 
 function get_sales_summary($range_from, $range_to) {
   // download target PDF
-  global $conn, $cookiefile, $venue_name;
+  global $conn, $base_url;
 
-  $url = "https://$venue_name.revelup.com/reports/sales_summary/pdf/?dining_option=&employee=&online_app=&online_app_type=&online_app_platform=&show_unpaid=1&show_irregular=1&range_from=$range_from&range_to=$range_to";
+  $url = BASE_URL."reports/sales_summary/pdf/?dining_option=&employee=&online_app=&online_app_type=&online_app_platform=&show_unpaid=1&show_irregular=1&range_from=$range_from&range_to=$range_to";
 
 #die($url);
   curl_setopt_array($conn, array(
     CURLOPT_URL         => $url,
-    CURLOPT_COOKIEJAR   => $cookiefile,
-    CURLOPT_COOKIEFILE  => $cookiefile,
+    CURLOPT_COOKIEJAR   => COOKIE_FILE,
+    CURLOPT_COOKIEFILE  => COOKIE_FILE,
     CURLOPT_FAILONERROR => true,
     CURLOPT_FOLLOWLOCATION => true,
     CURLOPT_REFERER => $url,
@@ -115,11 +116,9 @@ function get_product_mix_by_external_curl($range_from, $range_to) {
 */
 
 function get_product_mix($range_from, $range_to) {
-  global $conn, $cookiefile, $venue_name, $base_url;
+  global $conn;
 
-  //passthru("curl -sb $cookiefile -H 'Expect:' -d 'dining_option=' -d 'range_from=$range_from' -d 'range_to=$range_to' -d 'sort_by=n_items' -d 'sort_reverse=' -d 'combo_expand=' -d 'employee=' -d 'online_app=' -d 'online_app_type=' -d 'online_app_platform=' -d 'dining_option=' -d 'show_unpaid=' -d 'show_irregular=' -d 'sort_view=2' -d 'show_class=1' -d 'quantity_settings=0' -d 'no-filter=0' -d 'day_of_week=' ".$base_url."reports/product_mix/pdf/");
-
-  $url = $base_url."reports/product_mix/pdf/";
+  $url = BASE_URL.'reports/product_mix/pdf/';
   /*$report_option = array(
     'dining_option' => '',
     'range_from'    => urldecode($range_from),   // UNDONE urldecode?
@@ -163,11 +162,10 @@ function get_product_mix($range_from, $range_to) {
     'Content-Type: application/x-www-form-urlencoded',
     'Expect:'
   );
-  
   curl_setopt_array($conn, array(
     CURLOPT_URL         => $url,
-    CURLOPT_COOKIEJAR   => $cookiefile,
-    CURLOPT_COOKIEFILE  => $cookiefile,
+    CURLOPT_COOKIEJAR   => COOKIE_FILE,
+    CURLOPT_COOKIEFILE  => COOKIE_FILE,
     CURLOPT_FAILONERROR => true,
     CURLOPT_FOLLOWLOCATION => true,
     CURLOPT_REFERER     => $url,
@@ -183,7 +181,7 @@ function get_product_mix($range_from, $range_to) {
 }
 
 function sendmail($timeslot) {
-  global $to_address,$from_address,$body_text,$body_footer, $reply_to_address;
+  global $body_text,$body_footer;
 
   $today = date('d_m_Y');
   $range = $range = get_range_by_timeslot($timeslot);
@@ -193,11 +191,12 @@ function sendmail($timeslot) {
   $filedata2 = chunk_split(base64_encode(get_product_mix($range['range_from'], $range['range_to'])));
 
   $boundary = "__BOUNDARY__";
-  $to		= $to_address;
-  $from		= $from_address;
+  $to		= TO_ADDRESS;
+  $from		= FROM_ADDRESS;
+  $reply_to = REPLY_TO_ADDRESS;
   $subject	= "$timeslot time Sales Summary, Product Mix";
   $headers	= "From: $from
-Reply-to: $reply_to_address
+Reply-to: $reply_to
 MIME-Version: 1.0
 Content-Type: multipart/mixed;boundary=\"$boundary\"
 ";
