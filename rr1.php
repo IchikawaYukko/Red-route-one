@@ -102,14 +102,84 @@ function get_sales_summary($range_from, $range_to) {
   return curl_exec($conn);
 }
 
-function get_product_mix($range_from, $range_to) {
-  global $cookiefile, $venue_name;
+/*
+function get_product_mix_by_external_curl($range_from, $range_to) {
+  global $cookiefile, $venue_name, $base_url;
 
-  ob_start();
-  passthru("curl -sb $cookiefile -H 'Expect:' -d 'dining_option=' -d 'range_from=$range_from' -d 'range_to=$range_to' -d 'sort_by=n_items' -d 'sort_reverse=' -d 'combo_expand=' -d 'employee=' -d 'online_app=' -d 'online_app_type=' -d 'online_app_platform=' -d 'dining_option=' -d 'show_unpaid=' -d 'show_irregular=' -d 'sort_view=2' -d 'show_class=1' -d 'quantity_settings=0' -d 'no-filter=0' -d 'day_of_week=' https://$venue_name.revelup.com/reports/product_mix/pdf/");
-  $output = ob_get_contents();
+  ob_start() or die('error on ob_start');
+  passthru("curl -sb $cookiefile -H 'Expect:' -d 'dining_option=' -d 'range_from=$range_from' -d 'range_to=$range_to' -d 'sort_by=n_items' -d 'sort_reverse=' -d 'combo_expand=' -d 'employee=' -d 'online_app=' -d 'online_app_type=' -d 'online_app_platform=' -d 'dining_option=' -d 'show_unpaid=' -d 'show_irregular=' -d 'sort_view=2' -d 'show_class=1' -d 'quantity_settings=0' -d 'no-filter=0' -d 'day_of_week=' ".$base_url."reports/product_mix/pdf/");
+  $output = ob_get_flush();
 //  $ob_end_clean();
-return $output;
+  return $output;
+}
+*/
+
+function get_product_mix($range_from, $range_to) {
+  global $conn, $cookiefile, $venue_name, $base_url;
+
+  //passthru("curl -sb $cookiefile -H 'Expect:' -d 'dining_option=' -d 'range_from=$range_from' -d 'range_to=$range_to' -d 'sort_by=n_items' -d 'sort_reverse=' -d 'combo_expand=' -d 'employee=' -d 'online_app=' -d 'online_app_type=' -d 'online_app_platform=' -d 'dining_option=' -d 'show_unpaid=' -d 'show_irregular=' -d 'sort_view=2' -d 'show_class=1' -d 'quantity_settings=0' -d 'no-filter=0' -d 'day_of_week=' ".$base_url."reports/product_mix/pdf/");
+
+  $url = $base_url."reports/product_mix/pdf/";
+  /*$report_option = array(
+    'dining_option' => '',
+    'range_from'    => urldecode($range_from),   // UNDONE urldecode?
+    'range_to'      => urldecode($range_to),
+    'sort_by'       => 'n_items',
+    'sort_reverse'  => '',
+    'combo_expand'  => '',
+    'employee'      => '',
+    'online_app'    => '',
+    'online_app_type' => '',
+    'online_app_platform' => '',
+    'show_unpaid'   => '',
+    'show_irregular' => '',
+    'sort_view'     => '2',
+    'show_class'    => '1',
+    'quantity_settings' => '0',
+    'no-filter'     => '0',
+    'day_of_week'   => ''
+  );*/
+
+  $report_option = 
+    'dining_option='
+    .'&range_from='.$range_from
+    .'&range_to='.$range_to
+    .'&sort_by=n_items'
+    .'&sort_reverse='
+    .'&combo_expand='
+    .'&employee='
+    .'&online_app='
+    .'&online_app_type='
+    .'&online_app_platform='
+    .'&show_unpaid='
+    .'&show_irregular='
+    .'&sort_view=2'
+    .'&show_class=1'
+    .'&quantity_settings=0'
+    .'&no-filter=0'
+    .'&day_of_week='
+  ;
+  $request_header = array(
+    'Content-Type: application/x-www-form-urlencoded',
+    'Expect:'
+  );
+  
+  curl_setopt_array($conn, array(
+    CURLOPT_URL         => $url,
+    CURLOPT_COOKIEJAR   => $cookiefile,
+    CURLOPT_COOKIEFILE  => $cookiefile,
+    CURLOPT_FAILONERROR => true,
+    CURLOPT_FOLLOWLOCATION => true,
+    CURLOPT_REFERER     => $url,
+    CURLOPT_POST        => true,
+    CURLOPT_POSTFIELDS  => $report_option,
+    CURLOPT_HTTPHEADER  => $request_header,
+    CURLOPT_AUTOREFERER => true,
+    //CURLOPT_VERBOSE     => true,
+    CURLOPT_RETURNTRANSFER => true
+));
+
+  return = curl_exec($conn);
 }
 
 function sendmail($timeslot) {
