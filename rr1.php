@@ -88,7 +88,6 @@ function get_sales_summary($range_from, $range_to) {
 
   $url = BASE_URL."reports/sales_summary/pdf/?dining_option=&employee=&online_app=&online_app_type=&online_app_platform=&show_unpaid=1&show_irregular=1&range_from=$range_from&range_to=$range_to";
 
-#die($url);
   curl_setopt_array($conn, array(
     CURLOPT_URL         => $url,
     CURLOPT_COOKIEJAR   => COOKIE_FILE,
@@ -97,9 +96,15 @@ function get_sales_summary($range_from, $range_to) {
     CURLOPT_FOLLOWLOCATION => true,
     CURLOPT_REFERER => $url,
     CURLOPT_AUTOREFERER => true,
+    /*CURLOPT_VERBOSE => true,*/
     CURLOPT_RETURNTRANSFER => true
 ));
 
+  /*
+  $result = curl_exec($conn);
+  echo $result;
+  return $result;
+  */
   return curl_exec($conn);
 }
 
@@ -177,7 +182,7 @@ function get_product_mix($range_from, $range_to) {
     CURLOPT_RETURNTRANSFER => true
 ));
 
-  return = curl_exec($conn);
+  return curl_exec($conn);
 }
 
 function sendmail($timeslot) {
