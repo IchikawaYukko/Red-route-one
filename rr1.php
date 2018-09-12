@@ -1,5 +1,6 @@
 <?php
 require_once("settings.php");
+require_once("RR1_Mail.php");
 
 define('BASE_URL', 'https://'.VENUE_NAME.'.revelup.com/');
 define('AUTH_URL', BASE_URL.'login/?next=/dashboard/');
@@ -9,7 +10,36 @@ $conn = curl_init();
 $token = get_csrfmiddlewaretoken(BASE_URL);
 get_auth_cookie(AUTH_URL, $token);
 
-sendmail($argv[1]);
+$timeslot = $argv[1];
+//sendmail($argv[1]);
+
+$addr = array(
+  'to'        =>  TO_ADDRESS,
+  'from'      =>  FROM_ADDRESS,
+  'reply_to'  =>  REPLY_TO_ADDRESS,
+);
+
+$today = date('d_m_Y');
+$range = get_range_by_timeslot($timeslot);
+
+$file = array();
+$file[] = array(
+  'filename'  =>  "SalesSummary$today.pdf",  // TODO set correct name
+  'data'      =>  get_sales_summary($range['range_from'], $range['range_to']),
+);
+
+$file[] = array(
+  'filename'  =>  "ProductMix$today.pdf",
+  'data'      =>  get_product_mix($range['range_from'], $range['range_to']),
+);
+
+$subject	= "$timeslot time Sales Summary, Product Mix";
+$message = "Today's $timeslot time summary and Product mix.";
+$message .= $body_footer;
+
+$mail = new RR1Mail();
+$mail->sendmail($addr, $subject, $message, $file);
+
 curl_close($conn);
 
 function get_range_by_timeslot($timeslot) {
@@ -185,7 +215,7 @@ function get_product_mix($range_from, $range_to) {
   return curl_exec($conn);
 }
 
-function sendmail($timeslot) {
+/*function sendmail($timeslot) {
   global $body_text,$body_footer;
 
   $today = date('d_m_Y');
@@ -229,5 +259,5 @@ $filedata2
   $message_body .= "--$boundary--";
 
   mail($to, $subject, $message_body, $headers);
-}
+}*/
 ?>

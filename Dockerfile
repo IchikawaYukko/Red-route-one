@@ -13,6 +13,8 @@ COPY	transport.db	/etc/postfix/transport.db
 COPY	php.ini /opt/rh/rh-php70/register.content/etc/opt/rh/rh-php70/php.ini
 COPY	settings.php	/settings.php
 COPY	rr1.php		/rr1.php
+COPY	RR1_Mail.php	/RR1_Mail.php
+COPY	Revel.php	/Revel.php
 
 #CMD	["sh", "-c", "rsyslogd -n ; postfix start ; tail -F /var/log/maillog"]
 CMD	/sbin/init
