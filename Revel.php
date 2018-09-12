@@ -1,5 +1,4 @@
 <?php
-
 class Revel {
     private $username, $password, $csrf_token, $curl_handle;
     private $base_url, $auth_url;
@@ -47,7 +46,7 @@ class Revel {
         date_default_timezone_set(TIME_ZONE);
         $yesterday = date('m/d/Y', strtotime('-1 day'));
         $today = date('m/d/Y');
-      
+
         switch ($timeslot) {
             case 'lunch':
                 $time_begin = '03:00:01'; $time_end = '15:00:00';
@@ -68,9 +67,9 @@ class Revel {
 
     public static function get_filename_suffix_by_timeslot(string $timeslot) {
         date_default_timezone_set(TIME_ZONE);
-        $yesterday = date('m/d/Y', strtotime('-1 day'));
-        $today = date('m/d/Y');
-      
+        $yesterday = date('m_d_Y', strtotime('-1 day'));
+        $today = date('m_d_Y');
+
         switch ($timeslot) {
             case 'lunch':
                 $filedate = $today;
@@ -104,7 +103,7 @@ class Revel {
             CURLOPT_AUTOREFERER => true,
             CURLOPT_RETURNTRANSFER => true
         ));
-        
+
         curl_exec($this->curl_handle);
     }
 
