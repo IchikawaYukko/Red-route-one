@@ -74,11 +74,22 @@ class Revel {
                 $time_begin = '03:00:01'; $time_end = '03:00:00';
                 $last_monday = date('m/d/Y', strtotime('-6 day'));
                 $range_from = urlencode($last_monday).'+'.urlencode($time_begin);
-                break;
+				break;
         }
-        $range_to   = urlencode($today).'+'.urlencode($time_end);
+		$range_to   = urlencode($today).'+'.urlencode($time_end);
         return array('range_from' => $range_from, 'range_to' => $range_to);
-    }
+	}
+	
+	public function get_range_by_date(int $epoc) {
+		$specify_date	= date('m/d/y', $epoc);
+		$next_date		= date('m/d/y', strtotime('+1 day'));
+
+		$time_begin = '03:00:01'; $time_end = '03:00:00';
+		$range_from = urlencode($specify_date).'+'.urlencode($time_begin);
+		$range_to   = urlencode($next_date).'+'.urlencode($time_end);
+
+		return array('range_from' => $range_from, 'range_to' => $range_to);
+	}
 
     public static function get_filename_suffix_by_timeslot(string $timeslot) {
         date_default_timezone_set(TIME_ZONE);
