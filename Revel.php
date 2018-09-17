@@ -65,6 +65,15 @@ class Revel {
                 $time_begin = '17:30:01'; $time_end = '03:00:00';
                 $range_from = urlencode($yesterday).'+'.urlencode($time_begin);
                 break;
+            case 'wholeday':
+                $time_begin = '03:00:01'; $time_end = '03:00:00';
+                $range_from = urlencode($yesterday).'+'.urlencode($time_begin);
+                break;
+            case 'weekly':
+                $time_begin = '03:00:01'; $time_end = '03:00:00';
+                $last_monday = date('m/d/Y', strtotime('-6 day'));
+                $range_from = urlencode($last_monday).'+'.urlencode($time_begin);
+                break;
         }
         $range_to   = urlencode($today).'+'.urlencode($time_end);
         return array('range_from' => $range_from, 'range_to' => $range_to);
@@ -84,6 +93,12 @@ class Revel {
                 break;
             case 'dinner':
                 $filedate = $yesterday;
+                break;
+            case 'wholeday':
+                $filedate = $yesterday;
+                break;
+            case 'weekly':
+                $filedate = date('W'); // week number
                 break;
         }
         return $filedate.$timeslot;
