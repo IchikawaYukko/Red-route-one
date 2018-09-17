@@ -136,6 +136,12 @@ class Revel {
             $pos_station = '';
         }
 
+        $url = "{$this->base_url}reports/sales_summary/pdf/?dining_option=&{$pos_station}employee=&online_app=&online_app_type=&online_app_platform=&show_unpaid=1&show_irregular=1&range_from=$range_from&range_to=$range_to";
+
+        return $this->get_data_by_get_method($url);
+    }
+
+    private function get_data_by_get_method($url) {
         curl_setopt_array($this->curl_handle, array(
             CURLOPT_URL         => $url,
             CURLOPT_COOKIEJAR   => self::COOKIE_FILE,
