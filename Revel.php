@@ -137,10 +137,16 @@ class Revel {
             $pos_station = '';
         }
 
-        $url = "{$this->base_url}reports/sales_summary/pdf/?dining_option=&{$pos_station}employee=&online_app=&online_app_type=&online_app_platform=&show_unpaid=1&show_irregular=1&range_from=$range_from&range_to=$range_to";
+        $url = "{$this->sales_summary_url}pdf/?dining_option=&{$pos_station}employee=&online_app=&online_app_type=&online_app_platform=&show_unpaid=1&show_irregular=1&range_from=$range_from&range_to=$range_to";
 
         return $this->get_data_by_get_method($url);
-    }
+	}
+	
+	public function get_sales_summary_json(string $range_from, string $range_to) {
+		$url = "{$this->sales_summary_url}json/?dining_option=&employee=&online_app=&online_app_type=&online_app_platform=&show_unpaid=1&show_irregular=1&range_from=$range_from&range_to=$range_to&format=json";
+
+        return $this->get_data_by_get_method($url);
+	}
 
     private function get_data_by_get_method($url) {
         curl_setopt_array($this->curl_handle, array(
