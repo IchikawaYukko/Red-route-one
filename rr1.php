@@ -23,11 +23,10 @@ function download_n_send(string $timeslot) {
 
 function scheduler () {
 	date_default_timezone_set(TIME_ZONE);
-	echo $time = date('H:i');
 	$hours = date('H');	$minutes = date('i'); $dayofweek = date('D');
 
-	// Lunch (Mon-Sat 16:10)
-	if($dayofweek != 'Sun' && $hours == '16' && preg_match('/^1[1-9]/', $minutes)) {
+	// Lunch (Mon-Sat 15:10)
+	if($dayofweek != 'Sun' && $hours == '15' && preg_match('/^1[1-9]/', $minutes)) {
 		download_n_send('lunch');
 		return;
 	}
