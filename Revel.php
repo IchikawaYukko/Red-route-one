@@ -2,7 +2,12 @@
 class Revel {
     private $username, $password, $csrf_token, $curl_handle;
     private $base_url, $auth_url;
-    const COOKIE_FILE = 'token.cookie';
+    private $pos_codes = [
+        'main' => '1',
+        'bar' => '2',
+        'sushi' => '5',
+    ];
+	const COOKIE_FILE = 'token.cookie';
 
     public function __construct(string $username, string $password, string $venue_name) {
         $this->username = $username;
@@ -108,8 +113,13 @@ class Revel {
     }
 
     // Download and return Sales Summary PDF
-    public function get_sales_summary($range_from, $range_to) {
-        $url = "{$this->base_url}reports/sales_summary/pdf/?dining_option=&employee=&online_app=&online_app_type=&online_app_platform=&show_unpaid=1&show_irregular=1&range_from=$range_from&range_to=$range_to";
+    public function get_sales_summary(string $range_from, string $range_to, string $pos_location = null) {
+
+        if($pos_location !== null) {
+            $pos_station = "posstation={$this->pos_codes[$pos_location]}&";
+        } else {
+            $pos_station = '';
+        }
 
         curl_setopt_array($this->curl_handle, array(
             CURLOPT_URL         => $url,
