@@ -1,14 +1,61 @@
 <?php
+// run this file 10 minutely by cron. the scheduled job will do.
+//
+// example: */10 * * * * php rr1.php
+// or
+// example: */10 * * * * docker exec -i rr1-test scl enable rh-php71 'php /rr1.php'
+
 require_once("settings.php");
 require_once("RR1_Mail.php");
 require_once("Revel.php");
 
-main($argv[1]);
+if(isset($argv[1]) && DEBUG) {
+	// for debug
+	download_n_send($argv[1]);
+} else {
+	scheduler();
+}
 
-function main(string $timeslot) {
+function download_n_send(string $timeslot) {
     $attach_file = download($timeslot);
     send($attach_file, $timeslot);
 }
+
+function scheduler () {
+	date_default_timezone_set(TIME_ZONE);
+	echo $time = date('H:i');
+	$hours = date('H');	$minutes = date('i'); $dayofweek = date('D');
+
+	// Lunch (Mon-Sat 16:10)
+	if($dayofweek != 'Sun' && $hours == '16' && preg_match('/^1[1-9]/', $minutes)) {
+		download_n_send('lunch');
+		return;
+	}
+	// Tea (Mon-Sat 17:40)
+	if($dayofweek != 'Sun' && $hours == '17' && preg_match('/^4[1-9]/', $minutes)) {
+		download_n_send('tea');
+		return;
+	}
+	// Dinner (Tue-Sun 3:10)
+	if($dayofweek != 'Mon' && $hours == '03' && preg_match('/^1[1-9]/', $minutes)) {
+		download_n_send('dinner');
+		return;
+	}
+	// Wholeday (Tue-Sun 3:20)
+	if($dayofweek != 'Mon' && $hours == '03' && preg_match('/^2[1-9]/', $minutes)) {
+		download_n_send('wholeday');
+		return;
+	}
+	// Weekly (Sun 3:30)
+	if($dayofweek == 'Sun' && $hours == '03' && preg_match('/^3[1-9]/', $minutes)) {
+		download_n_send('weekly');
+		return;
+	}
+	if(DEBUG) {
+		echo 'no schedule job on this time.';
+	}
+}
+
 
 function download(string $timeslot) {
     $revel = new Revel(REVEL_USERNAME, REVEL_PASSWORD, VENUE_NAME);
