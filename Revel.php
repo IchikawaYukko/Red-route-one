@@ -14,7 +14,8 @@ class Revel {
         $this->password = $password;
 
         $this->base_url = "https://{$venue_name}.revelup.com/";
-        $this->auth_url = "{$this->base_url}login/?next=/dashboard/";
+		$this->auth_url = "{$this->base_url}login/?next=/dashboard/";
+		$this->sales_summary_url = "{$this->base_url}reports/sales_summary/";
 
         $this->curl_handle = curl_init();
         $this->csrf_token = $this->get_csrfmiddlewaretoken();

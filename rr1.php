@@ -111,9 +111,32 @@ function send(array $file, string $timeslot) {
       'reply_to'  =>  REPLY_TO_ADDRESS,
     );
 
-    if($timeslot != 'wholeday') {
+	if($timeslot == 'weekly') {
+
         $subject	= "$timeslot time Sales Summary, Product Mix";
         $message = "Today's $timeslot time Sales Summary and Product mix.";
+	}
+	if($timeslot != 'wholeday') {
+		switch($timeslot) {
+			case 'lunch':
+				$timeslot_s = 'Lunch';
+				break;
+			case 'tea':
+				$timeslot_s = 'Tea';
+				break;
+			case 'dinner':
+				$timeslot_s = 'Dinner';
+				break;
+		}
+		$subject	= "$timeslot_s time Sales Summary";
+		$message = "Today's $timeslot time Sales Summary";
+
+		if(count($file) != 1) {
+			$message .= "and Product mix.";
+			$subject .= '& Product Mix';
+		} else {
+			$message .= ". No orders in $timeslot time. No Product Mix in this time.";
+		}
     } else {
         $subject	= "$timeslot time Product Mix";
         $message = "Today's $timeslot time Product mix.";
