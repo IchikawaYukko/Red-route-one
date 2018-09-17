@@ -156,6 +156,31 @@ class Revel {
         return curl_exec($this->curl_handle);
     }
 
+    // Download and return Product Mix csv
+    public function get_product_mix_csv($range_from, $range_to) {
+        $url = "{$this->base_url}reports/product_mix/data/?"
+        .'sort_by=n_items&'
+        .'sort_reverse=&'
+        .'combo_expand=&'
+        .'employee=&'
+        .'online_app=&'
+        .'online_app_type=&'
+        .'online_app_platform=&'
+        .'dining_option=&'
+        .'show_unpaid=1&'
+        .'show_irregular=1&'
+        .'sort_view=2&'
+        .'show_product=1&'
+        .'quantity_settings=0&'
+        .'no-filter=0&'
+        .'day_of_week=&'
+        ."range_from=$range_from&"
+        ."range_to=$range_to&"
+        .'format=csv';
+
+        return $this->get_data_by_get_method($url);
+    }
+
     // Download and return Product Mix PDF
     public function get_product_mix($range_from, $range_to) {
         $url = "{$this->base_url}reports/product_mix/pdf/";
@@ -199,6 +224,13 @@ class Revel {
         ));
 
         return curl_exec($this->curl_handle);
+    }
+
+    public function product_mix_is_empty($range_from, $range_to) {
+        if(strlen($this->get_product_mix_csv($range_from, $range_to)) === 0) {
+            return true;
+        }
+        return false;
     }
 }
 ?>
