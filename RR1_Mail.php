@@ -42,7 +42,6 @@ HEREDOC;
     }
 
     private function build_header(array $address): string {   // PHPv7
-//    private function build_header(array $address) {             // PHPv5
         $boundary = self::MIME_BOUNDARY;
 
         // Validate Address
