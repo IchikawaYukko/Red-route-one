@@ -113,10 +113,12 @@ function send(array $file, string $timeslot) {
 
 	if($timeslot == 'weekly') {
 
-        $subject	= "$timeslot time Sales Summary, Product Mix";
-        $message = "Today's $timeslot time Sales Summary and Product mix.";
+        $subject	= "Weekly Sales Summary";
+        $message = "Weekly Sales Summary.";
 	}
-	if($timeslot != 'wholeday') {
+	if(	$timeslot == 'lunch' ||
+		$timeslot == 'tea' ||
+		$timeslot == 'dinner' ) {
 		switch($timeslot) {
 			case 'lunch':
 				$timeslot_s = 'Lunch';
