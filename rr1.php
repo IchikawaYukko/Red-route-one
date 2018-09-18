@@ -9,9 +9,10 @@ require_once("settings.php");
 require_once("RR1_Mail.php");
 require_once("Revel.php");
 
-if(isset($argv[1]) && DEBUG) {
-	// for debug
-	download_n_send($argv[1]);
+if(isset($argv[1])) {
+	if(DEBUG) {
+		download_n_send($argv[1]);
+	}
 } else {
 	scheduler();
 }
@@ -25,33 +26,33 @@ function scheduler () {
 	date_default_timezone_set(TIME_ZONE);
 	$hours = date('H');	$minutes = date('i'); $dayofweek = date('D');
 
-	// Lunch (Mon-Sat 15:10)
-	if($dayofweek != 'Sun' && $hours == '15' && preg_match('/^1[1-9]/', $minutes)) {
+	// Lunch (18:00)
+	if($hours == '18' && preg_match('/^0[1-9]/', $minutes)) {
 		download_n_send('lunch');
 		return;
 	}
-	// Tea (Mon-Sat 17:40)
-	if($dayofweek != 'Sun' && $hours == '17' && preg_match('/^4[1-9]/', $minutes)) {
+	// Tea (18:10)
+	if($hours == '18' && preg_match('/^1[1-9]/', $minutes)) {
 		download_n_send('tea');
 		return;
 	}
-	// Dinner (Tue-Sun 3:10)
-	if($dayofweek != 'Mon' && $hours == '03' && preg_match('/^1[1-9]/', $minutes)) {
+	// Dinner (6:00)
+	if($hours == '06' && preg_match('/^0[1-9]/', $minutes)) {
 		download_n_send('dinner');
 		return;
 	}
-	// Wholeday (Tue-Sun 3:20)
-	if($dayofweek != 'Mon' && $hours == '03' && preg_match('/^2[1-9]/', $minutes)) {
+	// Wholeday (6:10)
+	if($hours == '06' && preg_match('/^1[1-9]/', $minutes)) {
 		download_n_send('wholeday');
 		return;
 	}
-	// Weekly (Sun 3:30)
-	if($dayofweek == 'Sun' && $hours == '03' && preg_match('/^3[1-9]/', $minutes)) {
+	// Weekly (Sun 6:20)
+	if($dayofweek == 'Sun' && $hours == '06' && preg_match('/^2[1-9]/', $minutes)) {
 		download_n_send('weekly');
 		return;
 	}
 	if(DEBUG) {
-		echo 'no schedule job on this time.';
+		//echo 'no schedule job on this time.';
 	}
 }
 
