@@ -88,7 +88,7 @@ function download(string $timeslot) {
         if(!$revel->product_mix_is_empty($range['range_from'], $range['range_to'])) {
             $file[] = array(
 				'filename'  =>  "ProductMix{$filesuffix}.pdf",
-				'data'      =>  $revel->get_product_mix_csv($range['range_from'], $range['range_to']),
+				'data'      =>  $revel->get_product_mix($range['range_from'], $range['range_to']),
 			);
         }
     }
