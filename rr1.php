@@ -27,35 +27,44 @@ function scheduler () {
 	$hours = date('H');	$minutes = date('i'); $dayofweek = date('D');
 
 	// Lunch (18:00)
-	if($hours == '18' && preg_match('/^0[1-9]/', $minutes)) {
+	if($hours == '18' && preg_match('/^0[0-9]/', $minutes)) {
 		download_n_send('lunch');
+		scheduler_write_log('lunch message sent.');
 		return;
 	}
 	// Tea (18:10)
-	if($hours == '18' && preg_match('/^1[1-9]/', $minutes)) {
+	if($hours == '18' && preg_match('/^1[0-9]/', $minutes)) {
 		download_n_send('tea');
+		scheduler_write_log('tea message sent.');
 		return;
 	}
 	// Dinner (6:00)
-	if($hours == '06' && preg_match('/^0[1-9]/', $minutes)) {
+	if($hours == '06' && preg_match('/^0[0-9]/', $minutes)) {
 		download_n_send('dinner');
+		scheduler_write_log('dinner message sent.');
 		return;
 	}
 	// Wholeday (6:10)
-	if($hours == '06' && preg_match('/^1[1-9]/', $minutes)) {
+	if($hours == '06' && preg_match('/^1[0-9]/', $minutes)) {
 		download_n_send('wholeday');
+		scheduler_write_log('wholeday message sent.');
 		return;
 	}
 	// Weekly (Sun 6:20)
-	if($dayofweek == 'Sun' && $hours == '06' && preg_match('/^2[1-9]/', $minutes)) {
+	if($dayofweek == 'Sun' && $hours == '06' && preg_match('/^2[0-9]/', $minutes)) {
 		download_n_send('weekly');
+		scheduler_write_log('weekly message sent.');
 		return;
 	}
-	if(DEBUG) {
-		//echo 'no schedule job on this time.';
-	}
+	//scheduler_write_log("Vars: $dayofweek $hours $minutes");
+	scheduler_write_log('no schedule job on this time.');
 }
 
+function scheduler_write_log(string $log_message) {
+	if(DEBUG) {
+		file_put_contents('scheduler.log', date('H:i').$log_message."\n", FILE_APPEND);
+	}
+}
 
 function download(string $timeslot) {
     $revel = new Revel(REVEL_USERNAME, REVEL_PASSWORD, VENUE_NAME);
