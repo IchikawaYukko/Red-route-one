@@ -1,16 +1,19 @@
 <?php
-$revel_username = "USERNAME HERE";
-$revel_password = "PASSWORD HERE";
-$venue_name = "xxxx";  //xxxx.revelup.com
-$timezone = 'Europe/London';
-$to_address = 'hoge@example.com';
-$from_address = 'XXXX reporting bot <noreply@example.com>';
-$reply_to_address = "piyo@example.com";
-$body_footer = "THIS IS AUTOMATED MESSAGE.
+define('DEBUG', false);
 
-Any issue? Please REPLY to developper [DEVELOPPER OR SERVER ADMIN ADDRESS].
-Or create issue on GitHub: https://github.com/IchikawaYukko/Red-route-one/issues
+define('REVEL_USERNAME', 'USER NAME HERE');
+define('REVEL_PASSWORD', 'PASSWORD HERE');
+define("VENUE_NAME", "xxxx");	// xxxx.revelup.com
+define('TIME_ZONE', 'Europe/London');
+define('TO_ADDRESS', 'RECIPIENT ADDRESS HERE');
+define('FROM_ADDRESS', 'xxxx reporting bot <noreply@example.com>');
+define('REPLY_TO_ADDRESS', 'REPLY ADDRESS HERE');
 
-from XXXX reporting bot.";
+$body_footer = <<<HEREDOC
+THIS IS AUTOMATED MESSAGE.
+
+Any issue? Please REPLY to developper devel@example.com.
+
+from xxx reporting bot.
+HEREDOC;
 ?>
-
