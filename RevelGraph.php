@@ -18,8 +18,8 @@ class RevelGraph{
 		$this->r = new Revel(REVEL_USERNAME, REVEL_PASSWORD, VENUE_NAME);
 	}
 
-	public function get_daily_each_pos_sales(int $epoc) {
-		$range		= $this->r->get_range_by_date($epoc);
+	public function get_daily_each_pos_sales(int $epoch) {
+		$range		= $this->r->get_range_by_date($epoch);
 		$json_array	= json_decode($this->r->get_sales_summary_json($range['range_from'], $range['range_to']));
 	
 		foreach($json_array[0]->net_sales_by_rev_center as $obj) {

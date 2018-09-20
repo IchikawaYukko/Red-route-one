@@ -80,8 +80,8 @@ class Revel {
         return array('range_from' => $range_from, 'range_to' => $range_to);
 	}
 	
-	public function get_range_by_date(int $epoc) {
-		$specify_date	= date('m/d/y', $epoc);
+	public function get_range_by_date(int $epoch) {
+		$specify_date	= date('m/d/y', $epoch);
 		$next_date		= date('m/d/y', strtotime('+1 day'));
 
 		$time_begin = '03:00:01'; $time_end = '03:00:00';
