@@ -62,7 +62,7 @@ function scheduler () {
 
 function scheduler_write_log(string $log_message) {
 	if(DEBUG) {
-		file_put_contents('scheduler.log', date('H:i').$log_message."\n", FILE_APPEND);
+		file_put_contents('scheduler.log', date('H:i T').$log_message."\n", FILE_APPEND);
 	}
 }
 
