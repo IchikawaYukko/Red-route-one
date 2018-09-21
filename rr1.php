@@ -66,7 +66,7 @@ function scheduler_write_log(string $log_message) {
 	}
 }
 
-function download(string $timeslot) {
+function download(string $timeslot) : array {
     $revel = new Revel(REVEL_USERNAME, REVEL_PASSWORD, VENUE_NAME);
 
     $range = $revel->get_range_by_timeslot($timeslot);

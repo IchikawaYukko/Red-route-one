@@ -80,7 +80,7 @@ class Revel {
         return array('range_from' => $range_from, 'range_to' => $range_to);
 	}
 	
-	public function get_range_by_date(int $epoch) {
+	public function get_range_by_date(int $epoch) : array {
 		$specify_date	= date('m/d/y', $epoch);
 		$next_date		= date('m/d/y', strtotime('+1 day'));
 
@@ -91,7 +91,7 @@ class Revel {
 		return array('range_from' => $range_from, 'range_to' => $range_to);
 	}
 
-    public static function get_filename_suffix_by_timeslot(string $timeslot) {
+    public static function get_filename_suffix_by_timeslot(string $timeslot) : string {
         date_default_timezone_set(TIME_ZONE);
         $yesterday = date('m_d_Y', strtotime('-1 day'));
         $today = date('m_d_Y');
@@ -159,7 +159,7 @@ class Revel {
         return $this->get_data_by_get_method($url);
 	}
 
-    private function get_data_by_get_method($url) {
+    private function get_data_by_get_method(string $url) {
         curl_setopt_array($this->curl_handle, array(
             CURLOPT_URL         => $url,
             CURLOPT_COOKIEJAR   => self::COOKIE_FILE,
@@ -175,7 +175,7 @@ class Revel {
     }
 
     // Download and return Product Mix csv
-    public function get_product_mix_csv($range_from, $range_to) {
+    public function get_product_mix_csv(string $range_from, string $range_to) {
         $url = "{$this->base_url}reports/product_mix/data/?"
         .'sort_by=n_items&'
         .'sort_reverse=&'
@@ -200,7 +200,7 @@ class Revel {
     }
 
     // Download and return Product Mix PDF
-    public function get_product_mix($range_from, $range_to) {
+    public function get_product_mix(string $range_from, string $range_to) {
         $url = "{$this->base_url}reports/product_mix/pdf/";
 
         $report_option = 
@@ -244,7 +244,7 @@ class Revel {
         return curl_exec($this->curl_handle);
     }
 
-    public function product_mix_is_empty($range_from, $range_to) {
+    public function product_mix_is_empty(string $range_from, string $range_to) : bool {
         if(strlen($this->get_product_mix_csv($range_from, $range_to)) === 0) {
             return true;
         }
