@@ -38,20 +38,20 @@ function scheduler () {
 		scheduler_write_log('tea message sent.');
 		return;
 	}
-	// Dinner (6:00)
-	if($hours == '06' && preg_match('/^0[0-9]/', $minutes)) {
+	// Dinner (3:30)
+	if($hours == '03' && preg_match('/^3[0-9]/', $minutes)) {
 		download_n_send('dinner');
 		scheduler_write_log('dinner message sent.');
 		return;
 	}
-	// Wholeday (6:10)
-	if($hours == '06' && preg_match('/^1[0-9]/', $minutes)) {
+	// Wholeday (4:00)
+	if($hours == '04' && preg_match('/^0[0-9]/', $minutes)) {
 		download_n_send('wholeday');
 		scheduler_write_log('wholeday message sent.');
 		return;
 	}
-	// Weekly (Sun 6:20)
-	if($dayofweek == 'Sun' && $hours == '06' && preg_match('/^2[0-9]/', $minutes)) {
+	// Weekly (Sun 4:10)
+	if($dayofweek == 'Sun' && $hours == '04' && preg_match('/^1[0-9]/', $minutes)) {
 		download_n_send('weekly');
 		scheduler_write_log('weekly message sent.');
 		return;
@@ -76,7 +76,8 @@ function download(string $timeslot) : array {
     if(
         $timeslot == 'lunch' ||
         $timeslot == 'tea' ||
-        $timeslot == 'dinner'
+        $timeslot == 'dinner' ||
+        $timeslot == 'wholeday'
     ) {
         $file[] = array(
             'filename'  =>  "SalesSummary{$filesuffix}.pdf",
@@ -94,6 +95,10 @@ function download(string $timeslot) : array {
     }
 
     if($timeslot == 'weekly') {
+        $file[] = array(
+            'filename'  =>  "Total_SalesSummary{$filesuffix}.pdf",
+            'data'      =>  $revel->get_sales_summary($range['range_from'], $range['range_to']),
+        );
         $file[] = array(
             'filename'  =>  "Bar_SalesSummary{$filesuffix}.pdf",
             'data'      =>  $revel->get_sales_summary($range['range_from'], $range['range_to'], 'bar'),
