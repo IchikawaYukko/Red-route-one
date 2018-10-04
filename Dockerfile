@@ -17,13 +17,6 @@ RUN	yum -y install postfix rh-php71-php rsyslog zip unzip rh-php71-php-mbstring 
 COPY	main.cf		/etc/postfix/main.cf
 COPY	transport.db	/etc/postfix/transport.db
 COPY	php.ini /opt/rh/rh-php70/register.content/etc/opt/rh/rh-php70/php.ini
-COPY	settings.php	/settings.php
-COPY	rr1.php		/rr1.php
-COPY	RR1_Mail.php	/RR1_Mail.php
-COPY	Revel.php	/Revel.php
-COPY	RevelGraph.php	/RevelGraph.php
-COPY	weekly-graph.xlsx /weekly-graph.xlsx
+COPY	./ /
 
-#CMD	["sh", "-c", "rsyslogd -n ; postfix start ; tail -F /var/log/maillog"]
-CMD	/sbin/init
-#CMD	/sbin/init & postmap /etc/postfix/transport; systemctl start rsyslog postfix; tail -F /var/log/maillog
+ENTRYPOINT	["/sbin/init"]

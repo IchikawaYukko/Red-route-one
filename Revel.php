@@ -37,7 +37,7 @@ class Revel {
             /*CURLOPT_VERBOSE => true,*/
             CURLOPT_RETURNTRANSFER  => true
         ));
-      
+
         $response = curl_exec($this->curl_handle) or die('fail on get_csrfmiddlewaretoken()');
 
         // Parse HTML
@@ -79,7 +79,7 @@ class Revel {
 		$range_to   = urlencode($today).'+'.urlencode($time_end);
         return array('range_from' => $range_from, 'range_to' => $range_to);
 	}
-	
+
 	public function get_range_by_date(int $epoch) : array {
 		$specify_date	= date('m/d/y', $epoch);
 		$next_date		= date('m/d/y', strtotime('+1 day'));

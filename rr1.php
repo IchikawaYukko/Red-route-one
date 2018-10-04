@@ -62,7 +62,7 @@ function scheduler () {
 
 function scheduler_write_log(string $log_message) {
 	if(DEBUG) {
-		file_put_contents('scheduler.log', date('H:i T').$log_message."\n", FILE_APPEND);
+		file_put_contents('scheduler.log', date('H:i T ').$log_message."\n", FILE_APPEND);
 	}
 }
 
@@ -148,10 +148,10 @@ function send(array $file, string $timeslot) {
 		$message = "Today's $timeslot time Sales Summary";
 
 		if(count($file) != 1) {
-			$message .= "and Product mix.";
+			$message .= "and Product mix.\n";
 			$subject .= '& Product Mix';
 		} else {
-			$message .= ". No orders in $timeslot time. No Product Mix in this time.";
+			$message .= ". No orders and Product Mix in $timeslot time.\n";
 		}
     } else {
         $subject	= "$timeslot time Product Mix";
