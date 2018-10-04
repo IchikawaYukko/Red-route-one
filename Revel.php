@@ -72,7 +72,7 @@ class Revel {
                 break;
             case 'weekly':
                 $time_begin = '03:00:01'; $time_end = '03:00:00';
-                $last_monday = date('m/d/Y', strtotime('-6 day'));
+                $last_monday = date('m/d/Y', strtotime('-7 day'));
                 $range_from = urlencode($last_monday).'+'.urlencode($time_begin);
 				break;
         }

@@ -33,11 +33,13 @@ function scheduler () {
 		return;
 	}
 	// Tea (18:10)
+/*
 	if($hours == '18' && preg_match('/^1[0-9]/', $minutes)) {
 		download_n_send('tea');
 		scheduler_write_log('tea message sent.');
 		return;
 	}
+*/
 	// Dinner (3:30)
 	if($hours == '03' && preg_match('/^3[0-9]/', $minutes)) {
 		download_n_send('dinner');
@@ -50,8 +52,8 @@ function scheduler () {
 		scheduler_write_log('wholeday message sent.');
 		return;
 	}
-	// Weekly (Sun 4:10)
-	if($dayofweek == 'Sun' && $hours == '04' && preg_match('/^1[0-9]/', $minutes)) {
+	// Weekly (Mon 4:10)
+	if($dayofweek == 'Mon' && $hours == '04' && preg_match('/^1[0-9]/', $minutes)) {
 		download_n_send('weekly');
 		scheduler_write_log('weekly message sent.');
 		return;
