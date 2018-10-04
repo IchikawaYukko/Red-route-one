@@ -127,41 +127,42 @@ function send(array $file, string $timeslot) {
       'reply_to'  =>  REPLY_TO_ADDRESS,
     );
 
-	if($timeslot == 'weekly') {
-
-        $subject	= "Weekly Sales Summary";
-        $message = "Weekly Sales Summary.";
+	switch($timeslot) {
+		case 'lunch':
+			$subject	= 'Lunch time';
+			$message	= "Today's $timeslot time";
+			break;
+		case 'dinner':
+			$subject	= 'Dinner time';
+			$message	= "Today's $timeslot time";
+			break;
+		case 'weekly':
+			$subject	= 'Weekly Sales Summary';
+			$message	= 'Week'.date('W')." Sales Summary\n";
+			break;
+		case 'wholeday':
+			$subject	= 'Wholeday';
+			$message	= "Today's $timeslot";
+			break;
 	}
-	if(	$timeslot == 'lunch' ||
-		$timeslot == 'tea' ||
-		$timeslot == 'dinner' ) {
-		switch($timeslot) {
-			case 'lunch':
-				$timeslot_s = 'Lunch';
-				break;
-			case 'tea':
-				$timeslot_s = 'Tea';
-				break;
-			case 'dinner':
-				$timeslot_s = 'Dinner';
-				break;
-		}
-		$subject	= "$timeslot_s time Sales Summary";
-		$message = "Today's $timeslot time Sales Summary";
 
-		if(count($file) != 1) {
-			$message .= "and Product mix.\n";
-			$subject .= '& Product Mix';
+	if($timeslot != 'weekly') {
+		if(!hasProductMix($file)) {
+			$subject .= ' Sales Summary';
+			$message .= " Sales Summary.\nNo orders and Product Mix in $timeslot time.\n";
 		} else {
-			$message .= ". No orders and Product Mix in $timeslot time.\n";
+			$subject .= ' Sales Summary & Product Mix';
+			$message .= " Sales Summary and Product mix.\n";
 		}
-    } else {
-        $subject	= "$timeslot time Product Mix";
-        $message = "Today's $timeslot time Product mix.";
-    }
+	}
+
     $message .= $body_footer;
 
     $mail = new RR1Mail();
     $mail->sendmail($addr, $subject, $message, $file);
+}
+
+function hasProductMix(array $file) : bool {
+	return count($file) != 1;
 }
 ?>
