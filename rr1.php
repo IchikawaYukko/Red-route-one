@@ -8,6 +8,7 @@
 require_once("settings.php");
 require_once("RR1_Mail.php");
 require_once("Revel.php");
+require_once('iZettlePro.php');
 
 if(isset($argv[1])) {
 	if(DEBUG) {
@@ -18,7 +19,16 @@ if(isset($argv[1])) {
 }
 
 function download_n_send(string $timeslot) {
-    $attach_file = download($timeslot);
+	if($timeslot != 'cafe') {
+		$attach_file = download($timeslot);
+	} else {
+		$izettle = new iZettlePro(I_ZETTLE_USERNAME, I_ZETTLE_PASSWORD);
+        $attach_file[] = array(
+            'filename'  =>  "hoge.html",
+			'data'      =>  $izettle->csv2html(dummy()),
+			//$izettle->csv2html($test->get_product_mix('10/21/2018', '10/21/2018'));
+        );
+	}
     send($attach_file, $timeslot);
 }
 

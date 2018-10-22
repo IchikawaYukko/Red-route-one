@@ -3,6 +3,8 @@ define('DEBUG', false);
 
 define('REVEL_USERNAME', 'USER NAME HERE');
 define('REVEL_PASSWORD', 'PASSWORD HERE');
+define('I_ZETTLE_USERNAME', 'USER NAME HERE');
+define('I_ZETTLE_PASSWORD', 'PASSWORD HERE');
 define("VENUE_NAME", "xxxx");	// xxxx.revelup.com
 define('TIME_ZONE', 'Europe/London');
 define('TO_ADDRESS', 'RECIPIENT ADDRESS HERE');
