@@ -4,5 +4,6 @@ main.cf
 php.ini
 transport
 transport.db
+scheduler.log
 
 
