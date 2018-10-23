@@ -17,6 +17,6 @@ RUN	yum -y install postfix rh-php71-php rsyslog zip unzip rh-php71-php-mbstring 
 COPY	main.cf		/etc/postfix/main.cf
 COPY	transport.db	/etc/postfix/transport.db
 COPY	php.ini /opt/rh/rh-php70/register.content/etc/opt/rh/rh-php70/php.ini
-COPY	./ /
+COPY	codes/ /
 
 ENTRYPOINT	["/sbin/init"]
