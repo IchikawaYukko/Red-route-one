@@ -35,11 +35,11 @@ HEREDOC;
             $filename = $file['filename'];
             $filedata = chunk_split(base64_encode($file['data']));
 
+            $part_header = $this->get_part_header($filename);
+
             $message_body .= <<<HEREDOC
 --$boundary
-Content-Type: application/octet-stream; name="{$filename}"
-Content-Disposition: attachment; filename="{$filename}"
-Content-Transfer-Encoding: base64
+$part_header
 
 $filedata
 
@@ -79,5 +79,21 @@ Content-Type: multipart/mixed;boundary="$boundary"
 
 HEREDOC;
     }
+
+    private function get_part_header(string $filename) {
+        $ext = ['.html', '.htm'];
+
+        $mimetype = 'application/octet-stream';    
+        foreach($ext as $e) {
+            if( $e == substr($filename, -strlen($e))) {
+                $mimetype = 'text/html';
+            }
+        }
+
+        return <<<HEREDOC
+Content-Type: {$mimetype}; name="{$filename}"
+Content-Disposition: attachment; filename="{$filename}"
+Content-Transfer-Encoding: base64
+HEREDOC;
+    }
 }
-?>
