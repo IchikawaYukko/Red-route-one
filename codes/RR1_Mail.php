@@ -1,9 +1,19 @@
 <?php
-
 class RR1Mail {
-    const MIME_BOUNDARY = '__BOUNDARY__';
-    public function __construct() {
+    private const MIME_BOUNDARY = '__BOUNDARY__';
+    private $body_mimetype, $encoding;
 
+    public function __construct() {
+        $this->body_mimetype = 'text/plain';
+        $this->encoding = 'ISO-2022-JP';
+    }
+
+    public function set_option(string $body_mimetype, string $encoding = null) {
+        $this->body_mimetype = $body_mimetype;
+
+        if (!is_null($encoding)) {
+            $this->encoding = $encoding;
+        }
     }
 
     public function sendmail(array $address, string $subject = null, string $body_text = null, array $attach_files = null) {
@@ -14,7 +24,7 @@ class RR1Mail {
         $headers        = $this->build_header($address);
         $message_body   = <<<HEREDOC
 --$boundary
-Content-Type: text/plain; charset=\"ISO-2022-JP\"
+Content-Type: {$this->body_mimetype}; charset=\"{$this->encoding}\"
 
 $body_text
 
@@ -37,7 +47,7 @@ HEREDOC;
         }
         $message_body .= "--$boundary--";
     
-        // echo $message_body;     // DEBUG
+        //echo $headers.$message_body;     // DEBUG
         mail($to, $subject, $message_body, $headers) or die('Mail sending failed');
     }
 
