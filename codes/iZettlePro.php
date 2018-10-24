@@ -36,14 +36,15 @@ class iZettlePro {
 		}
 	}
 
-	public function get_product_mix(string $start_date, string $end_date) :string{
-		$url = $this->get_product_mix_url($start_date, $end_date);
+	// $report_type is 'popular-product' or 'full-transaction' or etc...
+	public function get_report(string $report_type, string $start_date, string $end_date) :string{
+		$url = $this->get_report_url($report_type, $start_date, $end_date);
 
 		$this->curl->reset_option();
 		return $this->curl->exec_get($url);
 	}
 
-	private function get_product_mix_url(string $start_date, string $end_date) :string{
+	private function get_report_url(string $type, string $start_date, string $end_date) :string{
 		if($this->access_token == null) {
 			$this->get_access_token();
 		}
@@ -54,27 +55,10 @@ class iZettlePro {
 		]);
 		$json = $this->curl->exec_get(
 			$this->report_url
-			."popular-product?startDate=$start_date&endDate=$end_date&export=csv"
+			."$type?startDate=$start_date&endDate=$end_date&export=csv"
 		);
 
 		$obj = json_decode($json);
 		return $obj->url;
-	}
-
-	public function csv2html($csv) {
-		$parsed = explode("\n", $csv);
-		$parsed = array_map('str_getcsv', $parsed);
-
-		$html = "<table>";
-		foreach($parsed as $line) {
-			$html .= "<tr>";
-			foreach($line as $col) {
-				$html .= "<td>$col</td>";
-			}
-			$html .= "</tr>";
-		}
-
-		return $html;
-		//var_dump($html);
 	}
 }
