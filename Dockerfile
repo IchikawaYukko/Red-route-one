@@ -1,12 +1,12 @@
 FROM centos
 LABEL	maintainer "yuriko"
 RUN     yum -y update && \
-	localedef -v -c -i ja_JP -f UTF-8 ja_JP.UTF-8; echo ""; env LANG=ja_JP.UTF-8
-	yum -y install centos-release-scl centos-release-scl-rha
-	yum -y install postfix rh-php72-php rsyslog zip unzip rh-php72-php-mbstring rh-php72-php-gd rh-php72-php-xml rh-php72-php-pdo && \
+	localedef -v -c -i ja_JP -f UTF-8 ja_JP.UTF-8; echo ""; env LANG=ja_JP.UTF-8 && \
+	yum -y install centos-release-scl centos-release-scl-rha && \
+	yum -y install postfix rh-php71-php rsyslog zip unzip rh-php71-php-mbstring rh-php71-php-gd rh-php71-php-xml rh-php71-php-pdo && \
 	yum clean all && \
 	echo \#\!/bin/bash >> /etc/profile.d/scl-enable.sh&& \
-        echo source /opt/rh/rh-php71/enable >> /etc/profile.d/scl-enable.sh&& \
+        echo source /opt/rh/rh-php71/enable >> /etc/profile.d/scl-enable.sh && \
         echo X_SCLS="`scl enable rh-php71 'echo $X_SCLS'`" >> /etc/profile.d/scl-enable.sh && \
 	. /opt/rh/rh-php71/enable && \
 	php -r "copy('https://getcomposer.org/installer', 'composer-setup.php');" && \
@@ -17,7 +17,7 @@ RUN     yum -y update && \
 
 COPY	main.cf		/etc/postfix/main.cf
 COPY	transport.db	/etc/postfix/transport.db
-COPY	php.ini /opt/rh/rh-php70/register.content/etc/opt/rh/rh-php70/php.ini
+COPY	php.ini /opt/rh/rh-php71/register.content/etc/opt/rh/rh-php71/php.ini
 COPY	codes/ /
 
 ENTRYPOINT	["/sbin/init"]
