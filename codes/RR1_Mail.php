@@ -1,11 +1,17 @@
 <?php
+require_once 'EmailAddress.php';
+
 class RR1Mail {
     private const MIME_BOUNDARY = '__BOUNDARY__';
     private $body_mimetype, $encoding;
+    private $to, $from, $reply_to, $has_address;
+    private $subject, $body, $attachment;
 
     public function __construct() {
         $this->body_mimetype = 'text/plain';
         $this->encoding = 'ISO-2022-JP';
+        $this->has_address = false;
+        $this->attachment = [];
     }
 
     public function set_option(string $body_mimetype, string $encoding = null) {
@@ -16,28 +22,47 @@ class RR1Mail {
         }
     }
 
-    public function sendmail(array $address, string $subject = null, string $body_text = null, array $attach_files = null) {
+    public function set_address(array $to, EmailAddress $from, EmailAddress $reply_to) {
+        $this->to = EmailAddress::combine_address($to);
+        $this->from = $from->format('name_addr');
+        $this->reply_to = $reply_to->format('name_addr');
+
+        $this->has_address = true;
+    }
+
+    public function set_body(string $body_text, string $subject = null) {
+        $this->subject = $subject;
+        $this->body = $body_text;
+    }
+
+    private function build_body() : string {
         $boundary = self::MIME_BOUNDARY;
 
-        // Prepare body and headers
-        $to = $address['to'];
-        $headers        = $this->build_header($address);
-        $message_body   = <<<HEREDOC
+        return <<<HEREDOC
 --$boundary
 Content-Type: {$this->body_mimetype}; charset=\"{$this->encoding}\"
 
-$body_text
+{$this->body}
 
 HEREDOC;
+    }
 
-        // Attach file to mail
-        foreach($attach_files as $file) {
-            $filename = $file['filename'];
+    public function attach_file(string $filename, $data) {
+        $this->attachment[] = [
+            'filename'  => $filename,
+            'data'      => $data
+        ];
+    }
+    
+    private function build_attachment() :string{
+        $boundary = self::MIME_BOUNDARY;
+        $attachment_body = '';
+
+        foreach($this->attachment as $file) {
             $filedata = chunk_split(base64_encode($file['data']));
+            $part_header = $this->build_part_header($file['filename']);
 
-            $part_header = $this->get_part_header($filename);
-
-            $message_body .= <<<HEREDOC
+            $attachment_body .= <<<HEREDOC
 --$boundary
 $part_header
 
@@ -45,42 +70,46 @@ $filedata
 
 HEREDOC;
         }
-        $message_body .= "--$boundary--";
-    
-        //echo $headers.$message_body;     // DEBUG
-        mail($to, $subject, $message_body, $headers) or die('Mail sending failed');
+        $attachment_body .= "--$boundary--";
+
+        return $attachment_body;
     }
 
-    private function build_header(array $address): string {   // PHPv7
+    public function send() {
+        if(!$this->has_address) {
+            die('Address not set yet.');
+        }
+
+        // Prepare body and headers
+        $headers        = $this->build_header();
+        $message_body   = $this->build_body();
+        $message_body   .= $this->build_attachment();
+
+        if(DEBUG_LEVEL == 'info') {
+            echo $headers.$message_body;
+        }
+        mail($this->to, $this->subject, $message_body, $headers) or die('Mail sending failed');
+    }
+
+    private function build_header(): string {
         $boundary = self::MIME_BOUNDARY;
 
-        // Validate Address
-        if(!isset($address['to'])) {
-            die('To: address not specifyed.');
-        }
-        if(!isset($address['from'])) {
-            die('From: address not specifyed.');
-        }
-
-        //$to_header	    = 'To: '.$address['to'];
-        $from_header	= 'From: '.$address['from'];
-
-        if(isset($address['reply_to'])) {
-            $reply_to_header    = 'Reply-to: '.$address['reply_to'];
+        /*if(isset($this->reply_to)) {
+            $header .= 'Reply-to: '.$this->reply_to.PHP_EOL;
         } else {
-            $reply_to_header    ='Reply-to: ';
-        }
+            $header .= 'Reply-to: '.PHP_EOL;
+        }*/
 
         return <<<HEREDOC
-$from_header
-$reply_to_header
+From: {$this->from}
+Reply-to: {$this->reply_to}
 MIME-Version: 1.0
 Content-Type: multipart/mixed;boundary="$boundary"
 
 HEREDOC;
     }
 
-    private function get_part_header(string $filename) {
+    private function build_part_header(string $filename) : string {
         $ext = ['.html', '.htm'];
 
         $mimetype = 'application/octet-stream';    
