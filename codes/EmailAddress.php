@@ -2,9 +2,14 @@
 class EmailAddress {
     public $name, $address;
 
-    public function __construct(string $address, string $name = null) {
-        $this->name = $name;
-        $this->address = $address;
+    public function __construct($address, string $name = null) {
+        if('object' == gettype($address)) {
+            $this->name = $address->name;
+            $this->address = $address->address;
+        } else {
+            $this->name = $name;
+            $this->address = $address;
+        }
     }
 
     public function format(string $rfc5322_type) :string {

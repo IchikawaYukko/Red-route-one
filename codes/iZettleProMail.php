@@ -16,11 +16,13 @@ class iZettleProMail implements Job {
 		$aggr->import_fulltransaction_csv($izettle->get_report('full-transaction', $yesterday, $yesterday));
 		$html = $aggr->get_product_mix_html();
 
-		$addr = array(
-			'to'        =>  TO_ADDRESS,
-			'from'      =>  FROM_ADDRESS,
-			'reply_to'  =>  REPLY_TO_ADDRESS,
-		);
+		$to = [];
+		foreach($this->mail_settings->to as $address) {
+			$to[] = new EmailAddress($address);
+		}
+		
+		$from = new EmailAddress($this->mail_settings->from);
+		$reply_to = new EmailAddress($this->mail_settings->reply_to);
 
 		$subject = 'Product Mix';
 		$message = "Today's wholeday Product mix.\n";
