@@ -11,7 +11,7 @@ class iZettleProAggregate {
         
         $this->db->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_WARNING);
 
-        $this->db->query('DROP TABLE fulltransaction;');
+        $this->db->query('DROP TABLE IF EXISTS fulltransaction;');
         $this->db->query('CREATE TABLE IF NOT EXISTS fulltransaction(
         orderid int, _type text, product text, category text,
         gross real, tax real, net real, payment text);');
