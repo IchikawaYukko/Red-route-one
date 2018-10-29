@@ -1,9 +1,9 @@
 *.cookie
-settings.php
+codes/settings.php
 main.cf
 php.ini
 transport
 transport.db
 scheduler.log
-
+codes/settings.json
 
