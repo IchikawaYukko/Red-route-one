@@ -1,5 +1,4 @@
-NAME=yuriko/redroute1
-CNTNAME=rr1-test3
+NAME=yuriko/redroute1-izettle
 VERSION=php71
 
 build:
