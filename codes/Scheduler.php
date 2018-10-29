@@ -16,7 +16,7 @@ class Scheduler {
 		date_default_timezone_set(TIME_ZONE);
 		$hours = date('H');	$minutes = date('i'); $dayofweek = date('D');
 	
-		if(DEBUG) {
+		if(DEBUG_LEVEL == 'info') {
 			$this->scheduler_write_log('scheduler entry');
 		}
 		foreach($this->jobs as $job) {
