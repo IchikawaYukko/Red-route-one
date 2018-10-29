@@ -1,0 +1,55 @@
+{
+  "mail_settings": {
+    "cafe": {
+      "from": {
+        "name": "XXXX reporting bot",
+        "address": "noreply@example.com"
+      },
+      "reply_to": {
+        "name": "developper",
+        "address": "devel@example.com"
+      },
+      "to": [
+        {
+          "name": "recipient 1",
+          "address": "r1@example.com"
+        },
+        {
+          "name": "recipient 2",
+          "address": "r2@example.com"
+        }
+      ]
+    },
+    "restaurant": {
+      "from": {
+        "name": "XXXX restaurant reporting bot",
+        "address": "noreply@example.com"
+      },
+      "reply_to": {
+        "name": "developper",
+        "address": "devel@example.com"
+      },
+      "to": [
+        {
+          "name": "recipient 3",
+          "address": "r3@example.com"
+        },
+        {
+          "name": "recipient 2",
+          "address": "r2@example.com"
+        }
+      ]
+    }
+  },
+  "auth_credentials": {
+    "Revel": {
+      "username": "somebody@example.com",
+      "password": "password-here",
+      "venue_name": "xxxx"
+    },
+    "iZettlePro": {
+      "username": "nobody",
+      "password": "password"
+    }
+  }
+}

@@ -2,6 +2,13 @@
 require_once 'Job.php';
 require_once 'iZettlePro.php';
 require_once 'iZettleProAggregate.php';
+require_once 'RR1_Mail.php';
+require_once 'RR1_Settings.php';
+require_once 'EmailAddress.php';
+
+require_once 'mail_footer_template.php';
+
+//require_once 'dummy.php';
 
 class iZettleProMail implements Job {
 	public function do_job(string $arg) {

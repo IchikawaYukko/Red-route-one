@@ -1,21 +1,4 @@
 <?php
-
-define('REVEL_USERNAME', 'USER NAME HERE');
-define('REVEL_PASSWORD', 'PASSWORD HERE');
-define('I_ZETTLE_USERNAME', 'USER NAME HERE');
-define('I_ZETTLE_PASSWORD', 'PASSWORD HERE');
-define("VENUE_NAME", "xxxx");	// xxxx.revelup.com
 define('DEBUG_LEVEL', 'none');  // none or info
 define('TIME_ZONE', 'Europe/London');
-define('TO_ADDRESS', 'RECIPIENT ADDRESS HERE');
-define('FROM_ADDRESS', 'xxxx reporting bot <noreply@example.com>');
-define('REPLY_TO_ADDRESS', 'REPLY ADDRESS HERE');
 
-$body_footer = <<<HEREDOC
-THIS IS AUTOMATED MESSAGE.
-
-Any issue? Please REPLY to developper devel@example.com.
-
-from xxx reporting bot.
-HEREDOC;
-?>
