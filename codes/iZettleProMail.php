@@ -11,33 +11,75 @@ require_once 'mail_footer_template.php';
 //require_once 'dummy.php';
 
 class iZettleProMail implements Job {
-	public function do_job(string $arg) {
-		global $body_footer;
+	private $settings, $mail_settings, $credential;
+	private $izettle, $aggr;
 
-        date_default_timezone_set(TIME_ZONE);
+	public function __construct() {
+		$this->settings = new RR1_Settings('settings.json');
+
+		$this->mail_settings = $this->settings->get_settings('mail_settings', 'cafe');
+		$this->credentials = $this->settings->get_settings('auth_credentials', 'iZettlePro'); 
+	}
+
+	public function do_job(string $timeslot) {
+		date_default_timezone_set(TIME_ZONE);
+		
+		$this->izettle = new iZettlePro($this->credentials->username, $this->credentials->password);
+		$this->aggr = new iZettleProAggregate();
+
+		$func = 'download_'.$timeslot;
+		$message = $this->$func();
+
+		/*if('weekly' === $arg) {
+			$this->weekly();
+		} else {
+			$this->deily();
+		}*/
+
+		$this->send($message);
+	}
+
+	private function download_daily() {
         $yesterday = date('m/d/Y', strtotime('-1 day'));
 
-		$izettle = new iZettlePro(I_ZETTLE_USERNAME, I_ZETTLE_PASSWORD);
-		$aggr = new iZettleProAggregate();
+		//$aggr->import_fulltransaction_csv(dummy());
 
-		$aggr->import_fulltransaction_csv($izettle->get_report('full-transaction', $yesterday, $yesterday));
-		$html = $aggr->get_product_mix_html();
+		$this->aggr->import_fulltransaction_csv($this->izettle->get_report('full-transaction', $yesterday, $yesterday));
+		return "Today's wholeday Product mix.".PHP_EOL;
+	}
 
+	private function download_weekly() {
+        $yesterday = date('m/d/Y', strtotime('-1 day'));
+        $lastweek = date('m/d/Y', strtotime('-7 day'));
+
+		//$aggr->import_fulltransaction_csv(dummy());
+
+		$this->aggr->import_fulltransaction_csv($this->izettle->get_report('full-transaction', $lastweek, $yesterday));
+		return "Weekly Product mix.".PHP_EOL;
+	}
+
+	private function send($message) {
 		$to = [];
 		foreach($this->mail_settings->to as $address) {
 			$to[] = new EmailAddress($address);
 		}
-		
+
 		$from = new EmailAddress($this->mail_settings->from);
 		$reply_to = new EmailAddress($this->mail_settings->reply_to);
 
-		$subject = 'Product Mix';
-		$message = "Today's wholeday Product mix.\n";
+		$html = $this->aggr->get_product_mix_html();
+		$html .= '<br />';
+		$html .= $this->aggr->get_sales_summary_html();
+
 		$message .= $html;
-		$message .= "<pre>$body_footer</pre>";
+		$message .= '<pre>';
+		$message .= body_footer($reply_to->format('addr_apec'), $from->format('display_name'));
+		$message .= '</pre>';
 
 		$mail = new RR1Mail();
-		$mail->set_option('text/html');
-		$mail->sendmail($addr, $subject, $message, []);
+		$mail->set_address($to, $from, $reply_to);
+		$mail->set_body($message, 'Product Mix & Sales Summary');
+		$mail->set_option('text/html', 'UTF-8');
+		$mail->send();
 	}
 }
