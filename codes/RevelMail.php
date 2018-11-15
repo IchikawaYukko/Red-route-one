@@ -108,10 +108,14 @@ class RevelMail implements Job {
 				$message .= " Sales Summary and Product mix.\n";
 			}
 		}
-	
-		$message .= $body_footer;
-	
+
 		$mail = new RR1Mail();
+
+		foreach($file as $f) {
+			$mail->attach_file($f['filename'], $f['data']);
+		}
+		$message .= $body_footer;
+
 		$mail->set_address($to, $from, $reply_to);
 		$mail->set_body($message, $subject);
 		$mail->send();
