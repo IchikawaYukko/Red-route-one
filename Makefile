@@ -1,5 +1,6 @@
 NAME=yuriko/redroute1-izettle
 VERSION=php71
+CNTNAME=rr1
 
 build:
 	postmap transport
