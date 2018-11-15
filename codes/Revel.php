@@ -1,4 +1,6 @@
 <?php
+require_once('CurlWrapper.php');
+
 class Revel {
     private $username, $password, $csrf_token, $curl_handle;
     private $base_url, $auth_url;
@@ -7,6 +9,7 @@ class Revel {
         'bar' => '2',
         'sushi' => '5',
     ];
+    private $curl;
 	const COOKIE_FILE = 'token.cookie';
 
     public function __construct(string $username, string $password, string $venue_name) {
@@ -20,6 +23,8 @@ class Revel {
         $this->curl_handle = curl_init();
         $this->csrf_token = $this->get_csrfmiddlewaretoken();
         $this->get_auth_cookie();
+
+        $this->curl = new CurlWrapper();
     }
 
     public function __destruct() {

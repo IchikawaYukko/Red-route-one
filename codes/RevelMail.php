@@ -2,18 +2,25 @@
 require_once 'Job.php';
 require_once 'Revel.php';
 require_once 'RR1_Mail.php';
+require_once 'RR1_Settings.php';
 
 class RevelMail implements Job {
-	public function __construct() {
+	private $settings, $mail_settings;
 
+	public function __construct() {
+		$this->settings = new RR1_Settings('settings.json');
+
+		$this->mail_settings = $this->settings->get_settings('mail_settings', 'cube_mayfair');
+		$this->credentials = $this->settings->get_settings('auth_credentials', 'Revel'); 
 	}
+
 	public function do_job(string $timeslot) {
 		$attach_file = $this->download($timeslot);
 		$this->send($attach_file, $timeslot);	
 	}
 
 	private function download(string $timeslot) : array {
-		$revel = new Revel(REVEL_USERNAME, REVEL_PASSWORD, VENUE_NAME);
+		$revel = new Revel($this->credentials->username, $this->credentials->password, $this->credentials->venue_name);
 	
 		$range = $revel->get_range_by_timeslot($timeslot);
 		$filesuffix = $revel->get_filename_suffix_by_timeslot($timeslot);
@@ -65,12 +72,14 @@ class RevelMail implements Job {
 	private function send(array $file, string $timeslot) {
 		global $body_footer;
 	
-		$addr = array(
-		  'to'        =>  TO_ADDRESS,
-		  'from'      =>  FROM_ADDRESS,
-		  'reply_to'  =>  REPLY_TO_ADDRESS,
-		);
-	
+		$to = [];
+		foreach($this->mail_settings->to as $address) {
+			$to[] = new EmailAddress($address);
+		}
+
+		$from = new EmailAddress($this->mail_settings->from);
+		$reply_to = new EmailAddress($this->mail_settings->reply_to);
+
 		switch($timeslot) {
 			case 'lunch':
 				$subject	= 'Lunch time';
@@ -103,7 +112,9 @@ class RevelMail implements Job {
 		$message .= $body_footer;
 	
 		$mail = new RR1Mail();
-		$mail->sendmail($addr, $subject, $message, $file);
+		$mail->set_address($to, $from, $reply_to);
+		$mail->set_body($message, $subject);
+		$mail->send();
 	}
 	
 	private function hasProductMix(array $file) : bool {
