@@ -6,4 +6,4 @@ transport
 transport.db
 scheduler.log
 codes/settings.json
-
+codes/*.sqlite
