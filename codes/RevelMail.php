@@ -4,6 +4,8 @@ require_once 'Revel.php';
 require_once 'RR1_Mail.php';
 require_once 'RR1_Settings.php';
 
+require_once 'mail_footer_template.php';
+
 class RevelMail implements Job {
 	private $settings, $mail_settings;
 
@@ -71,8 +73,6 @@ class RevelMail implements Job {
 	}
 
 	private function send(array $file, string $timeslot) {
-		global $body_footer;
-	
 		$to = [];
 		foreach($this->mail_settings->to as $address) {
 			$to[] = new EmailAddress($address);
@@ -119,7 +119,7 @@ class RevelMail implements Job {
 		foreach($file as $f) {
 			$mail->attach_file($f['filename'], $f['data']);
 		}
-		$message .= $body_footer;
+		$message .= body_footer($reply_to->format('addr_apec'), $from->format('display_name'));
 
 		$mail->set_address($to, $from, $reply_to);
 		$mail->set_body($message, $subject);
