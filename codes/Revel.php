@@ -32,7 +32,7 @@ class Revel {
     }
 
     private function get_csrfmiddlewaretoken() {
-        curl_setopt_array($this->curl_handle, array(
+        curl_setopt_array($this->curl_handle, [
             CURLOPT_URL		        => $this->base_url,
             CURLOPT_COOKIEJAR	    => self::COOKIE_FILE,
             CURLOPT_COOKIEFILE	    => self::COOKIE_FILE,
@@ -41,7 +41,7 @@ class Revel {
             CURLOPT_AUTOREFERER     => true,
             /*CURLOPT_VERBOSE => true,*/
             CURLOPT_RETURNTRANSFER  => true
-        ));
+        ]);
 
         $response = curl_exec($this->curl_handle) or die('fail on get_csrfmiddlewaretoken()');
 
@@ -87,7 +87,7 @@ class Revel {
                 break;
         }
 		$range_to   = urlencode($today).'+'.urlencode($time_end);
-        return array('range_from' => $range_from, 'range_to' => $range_to);
+        return ['range_from' => $range_from, 'range_to' => $range_to];
 	}
 
 	public function get_range_by_date(int $epoch) : array {
@@ -98,7 +98,7 @@ class Revel {
 		$range_from = urlencode($specify_date).'+'.urlencode($time_begin);
 		$range_to   = urlencode($next_date).'+'.urlencode($time_end);
 
-		return array('range_from' => $range_from, 'range_to' => $range_to);
+		return ['range_from' => $range_from, 'range_to' => $range_to];
 	}
 
     public static function get_filename_suffix_by_timeslot(string $timeslot) : string {
@@ -136,7 +136,7 @@ class Revel {
             'password' => $this->password,
             'csrfmiddlewaretoken' => $this->csrf_token
         ]);
-        curl_setopt_array($this->curl_handle, array(
+        curl_setopt_array($this->curl_handle, [
             CURLOPT_URL         => $this->auth_url,
             CURLOPT_COOKIEJAR   => self::COOKIE_FILE,
             CURLOPT_COOKIEFILE  => self::COOKIE_FILE,
@@ -146,8 +146,9 @@ class Revel {
             CURLOPT_FOLLOWLOCATION => true,
             CURLOPT_REFERER     => $this->auth_url,
             CURLOPT_AUTOREFERER => true,
+            //CURLOPT_VERBOSE => true,
             CURLOPT_RETURNTRANSFER => true
-        ));
+        ]);
 
         curl_exec($this->curl_handle);
     }
@@ -173,7 +174,7 @@ class Revel {
 	}
 
     private function get_data_by_get_method(string $url) {
-        curl_setopt_array($this->curl_handle, array(
+        curl_setopt_array($this->curl_handle, [
             CURLOPT_URL         => $url,
             CURLOPT_COOKIEJAR   => self::COOKIE_FILE,
             CURLOPT_COOKIEFILE  => self::COOKIE_FILE,
@@ -181,9 +182,9 @@ class Revel {
             CURLOPT_FOLLOWLOCATION => true,
             CURLOPT_REFERER     => $url,
             CURLOPT_AUTOREFERER => true,
-            /*CURLOPT_VERBOSE => true,*/
+            //CURLOPT_VERBOSE => true,  /* for debuging */
             CURLOPT_RETURNTRANSFER => true
-        ));
+        ]);
         return curl_exec($this->curl_handle);
     }
 
@@ -235,11 +236,11 @@ class Revel {
             .'&no-filter=0'
             .'&day_of_week='
         ;
-        $request_header = array(
+        $request_header = [
             'Content-Type: application/x-www-form-urlencoded',
             'Expect:'
-        );
-        curl_setopt_array($this->curl_handle, array(
+        ];
+        curl_setopt_array($this->curl_handle, [
             CURLOPT_URL             => $url,
             CURLOPT_COOKIEJAR       => self::COOKIE_FILE,
             CURLOPT_COOKIEFILE      => self::COOKIE_FILE,
@@ -252,7 +253,7 @@ class Revel {
             CURLOPT_AUTOREFERER     => true,
             //CURLOPT_VERBOSE     => true,
             CURLOPT_RETURNTRANSFER  => true
-        ));
+        ]);
 
         return curl_exec($this->curl_handle);
     }
