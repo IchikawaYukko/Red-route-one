@@ -24,19 +24,22 @@ class Scheduler {
 				&& preg_match($job->hour, $hours)
 				&& preg_match($job->minute, $minutes)) {
 
-				$this->scheduler_write_log("{$job->job_class} {$job->job_arg}");
+				$this->scheduler_write_log("{$job->job_class} {$job->job_arg} {$job->job_recipient}");
 
-				$instance = new $job->job_class;
-				return $instance->do_job($job->job_arg);
+				$this->call_job($job->job_class, $job->job_arg, $job->job_recipient);
 			}
 		}
 	}
 
-	public function force_run($classname, $arg) {
+	public function force_run($classname, $arg, $recipient) {
 		$this->scheduler_write_log("FORCE RUN $classname $arg");
 
+		$this->call_job($classname, $arg, $recipient);
+	}
+
+	private function call_job(string $classname, string $arg, string $recipient) {
 		$instance = new $classname;
-		return $instance->do_job($arg);
+		return $instance->do_job($arg, $recipient);
 	}
 
 	private function scheduler_write_log(string $log_message) : void {

@@ -5,42 +5,48 @@
       "hour": "/03/",
       "minute": "/^3[0-9]/",
       "job_class": "RevelMail",
-      "job_arg": "dinner"
+      "job_arg": "dinner",
+      "job_recipient": "cube_mayfair"
     },
     {
       "dayofweek": "//",
-      "hour": "/18/",
+      "hour": "/16/",
       "minute": "/^0[0-9]/",
       "job_class": "RevelMail",
-      "job_arg": "lunch"
+      "job_arg": "lunch",
+      "job_recipient": "cube_mayfair"
     },
     {
       "dayofweek": "//",
       "hour": "/04/",
       "minute": "/^0[0-9]/",
       "job_class": "RevelMail",
-      "job_arg": "wholeday"
+      "job_arg": "wholeday",
+      "job_recipient": "cube_mayfair"
     },
     {
       "dayofweek": "/Mon/",
       "hour": "/04/",
       "minute": "/^1[0-9]/",
       "job_class": "RevelMail",
-      "job_arg": "weekly"
+      "job_arg": "weekly",
+      "job_recipient": "cube_mayfair"
     },
     {
       "dayofweek": "//",
       "hour": "/05/",
       "minute": "/^0[0-9]/",
       "job_class": "iZettleProMail",
-      "job_arg": "daily"
+      "job_arg": "daily",
+      "job_recipient": "cafe"
     },
     {
       "dayofweek": "/Mon/",
       "hour": "/05/",
       "minute": "/^1[0-9]/",
       "job_class": "iZettleProMail",
-      "job_arg": "weekly"
+      "job_arg": "weekly",
+      "job_recipient": "cafe"
     }
 	]
 }

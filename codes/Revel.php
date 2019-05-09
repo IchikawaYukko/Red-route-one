@@ -79,7 +79,12 @@ class Revel {
                 $time_begin = '03:00:01'; $time_end = '03:00:00';
                 $last_monday = date('m/d/Y', strtotime('-7 day'));
                 $range_from = urlencode($last_monday).'+'.urlencode($time_begin);
-				break;
+                break;
+            case 'monthly':
+                $time_begin = '03:00:01'; $time_end = '03:00:00';
+                $last_monday = date('m/d/Y', strtotime('first day of last month'));
+                $range_from = urlencode($last_monday).'+'.urlencode($time_begin);
+                break;
         }
 		$range_to   = urlencode($today).'+'.urlencode($time_end);
         return array('range_from' => $range_from, 'range_to' => $range_to);
@@ -116,6 +121,9 @@ class Revel {
                 break;
             case 'weekly':
                 $filedate = date('W'); // week number
+                break;
+            case 'monthly':
+                $filedate = date('j', strtotime('first day of last month')); // month number
                 break;
         }
         return $filedate.$timeslot;

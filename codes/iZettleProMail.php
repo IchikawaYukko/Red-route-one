@@ -17,11 +17,11 @@ class iZettleProMail implements Job {
 	public function __construct() {
 		$this->settings = new RR1_Settings('settings.json');
 
-		$this->mail_settings = $this->settings->get_settings('mail_settings', 'cafe');
 		$this->credentials = $this->settings->get_settings('auth_credentials', 'iZettlePro'); 
 	}
 
-	public function do_job(string $timeslot) {
+	public function do_job(string $timeslot, string $recipient_group) {
+		$this->mail_settings = $this->settings->get_settings('mail_settings', $recipient_group);
 		date_default_timezone_set(TIME_ZONE);
 		
 		$this->izettle = new iZettlePro($this->credentials->username, $this->credentials->password);
@@ -30,19 +30,13 @@ class iZettleProMail implements Job {
 		$func = 'download_'.$timeslot;
 		$message = $this->$func();
 
-		/*if('weekly' === $arg) {
-			$this->weekly();
-		} else {
-			$this->deily();
-		}*/
-
 		$this->send($message);
 	}
 
 	private function download_daily() {
         $yesterday = date('m/d/Y', strtotime('-1 day'));
 
-		//$aggr->import_fulltransaction_csv(dummy());
+		//$aggr->import_fulltransaction_csv(dummy()); // for debug
 
 		$this->aggr->import_fulltransaction_csv($this->izettle->get_report('full-transaction', $yesterday, $yesterday));
 		return "Today's wholeday Product mix.".PHP_EOL;
@@ -52,10 +46,18 @@ class iZettleProMail implements Job {
         $yesterday = date('m/d/Y', strtotime('-1 day'));
         $lastweek = date('m/d/Y', strtotime('-7 day'));
 
-		//$aggr->import_fulltransaction_csv(dummy());
+		//$aggr->import_fulltransaction_csv(dummy()); // for debug
 
 		$this->aggr->import_fulltransaction_csv($this->izettle->get_report('full-transaction', $lastweek, $yesterday));
 		return "Weekly Product mix.".PHP_EOL;
+	}
+
+	private function download_monthly() {
+		$_1st_of_last = date('m/d/Y', strtotime('first day of last month'));
+        $_1st_of_this = date('m/d/Y', strtotime('first day of this month'));
+
+		$this->aggr->import_fulltransaction_csv($this->izettle->get_report('full-transaction', $_1st_of_last, $_1st_of_this));
+		return date('F', strtotime('first day of last month'))." Monthly Product mix.".PHP_EOL;
 	}
 
 	private function send($message) {

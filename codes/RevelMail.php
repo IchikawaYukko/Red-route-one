@@ -10,34 +10,35 @@ class RevelMail implements Job {
 	public function __construct() {
 		$this->settings = new RR1_Settings('settings.json');
 
-		$this->mail_settings = $this->settings->get_settings('mail_settings', 'cube_mayfair');
 		$this->credentials = $this->settings->get_settings('auth_credentials', 'Revel'); 
 	}
 
-	public function do_job(string $timeslot) {
+	public function do_job(string $timeslot, string $recipient_group) {
+		$this->mail_settings = $this->settings->get_settings('mail_settings', $recipient_group);
 		$attach_file = $this->download($timeslot);
-		$this->send($attach_file, $timeslot);	
+		$this->send($attach_file, $timeslot);
 	}
 
 	private function download(string $timeslot) : array {
 		$revel = new Revel($this->credentials->username, $this->credentials->password, $this->credentials->venue_name);
-	
+
 		$range = $revel->get_range_by_timeslot($timeslot);
 		$filesuffix = $revel->get_filename_suffix_by_timeslot($timeslot);
 	
 		$file = array();
 		if(
-			$timeslot == 'lunch' ||
-			$timeslot == 'tea' ||
-			$timeslot == 'dinner' ||
-			$timeslot == 'wholeday'
+			$timeslot == 'lunch'    ||
+			$timeslot == 'tea'      ||
+			$timeslot == 'dinner'   ||
+			$timeslot == 'wholeday' ||
+			$timeslot == 'monthly'
 		) {
 			$file[] = array(
 				'filename'  =>  "SalesSummary{$filesuffix}.pdf",
 				'data'      =>  $revel->get_sales_summary($range['range_from'], $range['range_to']),
 			);
 		}
-	
+
 		if($timeslot != 'weekly') {
 			if(!$revel->product_mix_is_empty($range['range_from'], $range['range_to'])) {
 				$file[] = array(
@@ -46,7 +47,7 @@ class RevelMail implements Job {
 				);
 			}
 		}
-	
+
 		if($timeslot == 'weekly') {
 			$file[] = array(
 				'filename'  =>  "Total_SalesSummary{$filesuffix}.pdf",
@@ -65,7 +66,7 @@ class RevelMail implements Job {
 				'data'      =>  $revel->get_sales_summary($range['range_from'], $range['range_to'], 'main'),
 			);
 		}
-	
+
 		return $file;
 	}
 
@@ -96,6 +97,10 @@ class RevelMail implements Job {
 			case 'wholeday':
 				$subject	= 'Wholeday';
 				$message	= "Today's $timeslot";
+				break;
+			case 'monthly':
+				$subject	= 'Monthly';
+				$message	= "$timeslot";
 				break;
 		}
 	
