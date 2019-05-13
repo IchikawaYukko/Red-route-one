@@ -1,0 +1,12 @@
+version: '3'
+
+services:
+  red-route-one:
+    build:
+      context: .
+    image: redroute1-izettle:php71
+    privileged: true
+    container_name: rr1
+    restart: always
+    environment:
+      - REWRITE_DOMAIN=example.com

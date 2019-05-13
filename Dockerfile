@@ -1,23 +1,13 @@
-FROM centos
-LABEL	maintainer "yuriko"
-RUN     yum -y update && \
-	localedef -v -c -i ja_JP -f UTF-8 ja_JP.UTF-8; echo ""; env LANG=ja_JP.UTF-8 && \
-	yum -y install centos-release-scl centos-release-scl-rha && \
-	yum -y install postfix rh-php71-php rsyslog zip unzip rh-php71-php-mbstring rh-php71-php-gd rh-php71-php-xml rh-php71-php-pdo && \
-	yum clean all && \
-	echo \#\!/bin/bash >> /etc/profile.d/scl-enable.sh&& \
-        echo source /opt/rh/rh-php71/enable >> /etc/profile.d/scl-enable.sh && \
-        echo X_SCLS="`scl enable rh-php71 'echo $X_SCLS'`" >> /etc/profile.d/scl-enable.sh && \
-	. /opt/rh/rh-php71/enable && \
-	php -r "copy('https://getcomposer.org/installer', 'composer-setup.php');" && \
-	php composer-setup.php && \
-	php -r "unlink('composer-setup.php');" && \
-	mv composer.phar /usr/local/bin/composer && \
-	composer require phpoffice/phpspreadsheet mpdf/mpdf
+FROM	php:7.3-cli
 
-COPY	main.cf		/etc/postfix/main.cf
-COPY	transport.db	/etc/postfix/transport.db
-COPY	php.ini /opt/rh/rh-php71/register.content/etc/opt/rh/rh-php71/php.ini
-COPY	codes/ /
+RUN	apt-get update && apt-get install -y cron ssmtp && \
+        echo '[mail function]' > /usr/local/etc/php/conf.d/mailsetting.ini && \
+        echo 'sendmail_path = /usr/sbin/ssmtp -t' >> /usr/local/etc/php/conf.d/mailsetting.ini && \
+        echo 'root=postmaster' > /etc/ssmtp/ssmtp.conf && \
+	echo '*/10 * * * * root php /root/rr1.php' >> /etc/crontab
+COPY    codes/ /root/
+COPY	entrypoint.sh /usr/local/bin/
+ENV	REWRITE_DOMAIN example.com
 
-ENTRYPOINT	["/sbin/init"]
+ENTRYPOINT ["entrypoint.sh"]
+CMD	["cron", "-f"]
