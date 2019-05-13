@@ -10,7 +10,8 @@ class Revel {
         'sushi' => '5',
     ];
     private $curl;
-	const COOKIE_FILE = 'token.cookie';
+    const COOKIE_FILE = 'token.cookie';
+    const USER_AGENT = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:66.0) Gecko/20100101 Firefox/66.0';
 
     public function __construct(string $username, string $password, string $venue_name) {
         $this->username = $username;
@@ -39,6 +40,7 @@ class Revel {
             CURLOPT_FAILONERROR	    => true,
             CURLOPT_FOLLOWLOCATION  => true,
             CURLOPT_AUTOREFERER     => true,
+            CURLOPT_HTTPHEADER      => ['User-Agent: '.self::USER_AGENT],
             /*CURLOPT_VERBOSE => true,*/
             CURLOPT_RETURNTRANSFER  => true
         ]);
@@ -146,6 +148,7 @@ class Revel {
             CURLOPT_FOLLOWLOCATION => true,
             CURLOPT_REFERER     => $this->auth_url,
             CURLOPT_AUTOREFERER => true,
+            CURLOPT_HTTPHEADER      => ['User-Agent: '.self::USER_AGENT],
             //CURLOPT_VERBOSE => true,
             CURLOPT_RETURNTRANSFER => true
         ]);
@@ -182,6 +185,7 @@ class Revel {
             CURLOPT_FOLLOWLOCATION => true,
             CURLOPT_REFERER     => $url,
             CURLOPT_AUTOREFERER => true,
+            CURLOPT_HTTPHEADER      => ['User-Agent: '.self::USER_AGENT],
             //CURLOPT_VERBOSE => true,  /* for debuging */
             CURLOPT_RETURNTRANSFER => true
         ]);
@@ -238,6 +242,7 @@ class Revel {
         ;
         $request_header = [
             'Content-Type: application/x-www-form-urlencoded',
+            'User-Agent: '.self::USER_AGENT,
             'Expect:'
         ];
         curl_setopt_array($this->curl_handle, [
